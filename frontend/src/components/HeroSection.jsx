@@ -48,11 +48,15 @@ import React, {useState, useEffect} from "react";
 import { FaCut, FaSpa, FaHandHoldingWater, FaSmile, FaWind, FaPaintBrush, FaLeaf, FaBaby } from "react-icons/fa";
 import { Link } from "react-router";
 import { useSelector } from "react-redux";
+import axios from "axios";
+import { SERVICE_API_END_POINT } from "../utils/constent";
 
 
 const HomeContent = () => {
 
   const {user} = useSelector((state) => state.user)
+  const [menServices, setMenServices] = useState([]);
+  const [womenServices, setWomenServices] = useState([]);
 
   const services = [
     { icon: <FaCut className="text-xl text-black" />, label: "Haircuts" },
@@ -66,10 +70,31 @@ const HomeContent = () => {
   ];
 
 
+  const fetchBestServices = async () => {
+    try {
+      const response = await axios.get(`${SERVICE_API_END_POINT}/getBestServices`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,        
+      })
+      console.log(response)
+      if (response.data.success) {
+        setMenServices(response.data.menServices);
+        setWomenServices(response.data.womenServices);
+      }
+    } catch (error) {
+      return toast.error(error.response.data.message);
+    }
+  }
+
+  useEffect(() => {
+    fetchBestServices();
+  }, [])
   
   return (      
       <div className="bg-gray-100">
-        
+        {/* {console.log("men",menServices)} */}
         <div className="relative bg-cover bg-center h-screen flex items-center justify-center">
           {/* Background image */}
 
@@ -161,7 +186,7 @@ const HomeContent = () => {
 
         {/* Section 2 */}
         <div className="container mx-auto px-4 py-10">
-          <h2 className="text-2xl font-bold mb-4">Popular in Your Area</h2>
+          <h2 className="text-2xl font-bold mb-4">Popular Services for Women's</h2>
           {/* <div className="flex space-x-4 mb-4">
             <button className="bg-gray-200 px-4 py-2 rounded-md">All</button>
             <button className="bg-gray-200 px-4 py-2 rounded-md">Today</button>
@@ -170,7 +195,9 @@ const HomeContent = () => {
             <button className="bg-gray-200 px-4 py-2 rounded-md">Next week</button>
             <button className="bg-gray-200 px-4 py-2 rounded-md">This month</button>
           </div> */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+          {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
             <div className="bg-white rounded-md shadow-md p-4 transition duration-500 hover:scale-105">
               <img
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTg2m8fPpP2IgOJx2yQNsgpT-w4OTsd84h3FQ&s"
@@ -182,6 +209,7 @@ const HomeContent = () => {
               <button className="bg-black text-white px-4 py-2 rounded-md">Book Now</button>
               <button className="bg-gray-300 text-black px-4 py-2 rounded-md ml-2">View Details</button>
             </div>
+
             <div className="bg-white rounded-md shadow-md p-4">
               <img
                 src="https://img.freepik.com/premium-photo/young-woman-with-glowing-natural-makeup-look-including-dewy-skin-soft-eyeshadow-posing-against-clean-lightcolored-background_1229213-56597.jpg"
@@ -215,15 +243,97 @@ const HomeContent = () => {
               <button className="bg-black text-white px-4 py-2 rounded-md">Book Now</button>
               <button className="bg-gray-300 text-black px-4 py-2 rounded-md ml-2">View Details</button>
             </div>
+          </div> */}
+
+          {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {menServices.map((service) => (
+              <div
+                key={service.id}
+                className="bg-white rounded-md shadow-md p-4 transition duration-500 hover:scale-105"
+              >
+                <img
+                  src={service.serviceImage}
+                  alt={service.name}
+                  className="w-full h-48 object-cover rounded-md mb-2"
+                />
+                <h3 className="text-xl font-bold mb-1">{service.name}</h3>
+                <p className="text-gray-600 mb-2">{service.description}</p>
+                <button className="bg-black text-white px-4 py-2 rounded-md">Book Now</button>
+                <button className="bg-gray-300 text-black px-4 py-2 rounded-md ml-2">View Details</button>
+              </div>
+            ))}
+          </div> */}
+
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                {womenServices.map((service) => (
+                  <div
+                    key={service.id}
+                    className="bg-white rounded-lg shadow-md overflow-hidden transition-all transform duration-300 hover:scale-105 hover:shadow-lg"
+                  >
+                    <div className="aspect-video relative overflow-hidden">
+                      <img
+                        src={service.serviceImage || "/placeholder.svg"}
+                        alt={service.name}
+                        className="object-cover w-full h-full transition-transform hover:scale-105"
+                      />
+                      {service.serviceType && (
+                        <span className="absolute top-2 right-2 px-2 py-1 bg-black/75 text-white text-xs rounded-full">
+                          {service.serviceType}
+                        </span>
+                      )}
+                    </div>
+                    <div className="p-4">
+                      <div className="flex justify-between items-start pb-2">
+                        <h3 className="text-xl font-bold">{service.name}</h3>
+                        <span className="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-sm font-semibold">
+                        ₹{service.price}
+                        </span>
+                      </div>
+                      <p className="text-gray-600 line-clamp-3">{service.description}</p>
+                      <div className="mt-2 space-y-1">
+                        <div className="flex items-center text-sm text-gray-600">
+                          <span className="font-medium mr-2">Duration:</span>
+                          {service.duration} minutes
+                        </div>
+                        
+                      </div>
+                      {service.availableAtHome && (
+                        <div className="mt-2 flex items-center text-green-600">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4 mr-1"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M3 12l2-2m0 0l7-7 7 7m-7-7v14"
+                            />
+                          </svg>
+                          <span className="text-xs font-medium">Available at home</span>
+                        </div>
+                      )}
+                      
+                    </div>
+                  </div>
+                ))}
           </div>
+
+
+
         </div>
 
 
 
         {/* Section 3 */}
         <div className="container mx-auto px-4 py-20 bg-white rounded-lg">
-          <h1 className="text-2xl font-bold mb-4">This week in Beauty Parlours</h1>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <h1 className="text-2xl font-bold mb-4">Popular Services for Men's</h1>
+          
+          {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-white rounded-md shadow-md p-4">
               <img
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTg2m8fPpP2IgOJx2yQNsgpT-w4OTsd84h3FQ&s"
@@ -268,7 +378,71 @@ const HomeContent = () => {
               <button className="bg-black text-white px-4 py-2 rounded-md">Book Now</button>
               <button className="bg-gray-300 text-black px-4 py-2 rounded-md ml-2">View Details</button>
             </div>
+          </div> */}
+
+
+            
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                {menServices.map((service) => (
+                  <div
+                    key={service.id}
+                    className="bg-white rounded-lg shadow-md overflow-hidden transition-all transform duration-300 hover:scale-105 hover:shadow-lg"
+                  >
+                    <div className="aspect-video relative overflow-hidden">
+                      <img
+                        src={service.serviceImage || "/placeholder.svg"}
+                        alt={service.name}
+                        className="object-cover w-full h-full transition-transform hover:scale-105"
+                      />
+                      {service.serviceType && (
+                        <span className="absolute top-2 right-2 px-2 py-1 bg-black/75 text-white text-xs rounded-full">
+                          {service.serviceType}
+                        </span>
+                      )}
+                    </div>
+                    <div className="p-4">
+                      <div className="flex justify-between items-start pb-2">
+                        <h3 className="text-xl font-bold">{service.name}</h3>
+                        <span className="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-sm font-semibold">
+                        ₹{service.price}
+                        </span>
+                      </div>
+                      <p className="text-gray-600 line-clamp-3">{service.description}</p>
+                      <div className="mt-2 space-y-1">
+                        <div className="flex items-center text-sm text-gray-600">
+                          <span className="font-medium mr-2">Duration:</span>
+                          {service.duration} minutes
+                        </div>
+                        
+                      </div>
+                      {service.availableAtHome && (
+                        <div className="mt-2 flex items-center text-green-600">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4 mr-1"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M3 12l2-2m0 0l7-7 7 7m-7-7v14"
+                            />
+                          </svg>
+                          <span className="text-xs font-medium">Available at home</span>
+                        </div>
+                      )}
+                      
+                    </div>
+                  </div>
+                ))}
           </div>
+          
+
+
+
         </div>
         {/* <hr class="border border-gray-300" /> */}
 

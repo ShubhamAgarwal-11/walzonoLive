@@ -21,6 +21,7 @@ router.post('/partner/addServices',upload.fields([
     }
 ]),partnerController.addServices);
 
-router.get('/partner/getServices',partnerController.getAllServices);
+router.get('/partner/getServices',partnerController.getAllServicesOfSelectedPartner);
+
 
 module.exports = router;

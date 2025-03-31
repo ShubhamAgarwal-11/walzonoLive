@@ -12,16 +12,18 @@ import Add_Partners1 from './components/partners_component/v1/Add_Partners_Step1
 import Add_Partners2 from './components/partners_component/v1/Add_Partners_Step2'
 import Add_Partners3 from './components/partners_component/v1/Add_Partners_Step3'
 import Services from './components/Services'
-import PartnerDetail from './components/all_partners'
+// import ServiceLists from './components/all_partners'
+import ServiceLists from './components/All_partners'
 import Select_partner from './components/Select_partner'
 import Booking from './components/Booking'
 import Dashboard from './components/Dashboard'
 import LandingPage from './components/LandingPage'
-import Cart from './components/Cart'
+import Cart from './components/cart/Cart'
 import ApplicationUnderReview from './components/partners_component/ApplicationUnderReview'
 import AppDashBoard from './components/dashboard/AppDashBoard'
 import PartnerRegistration from './components/partners_component/PartnerRegistration'
 import OTPLogin from './components/partners_component/OTPLogin'
+import PaymentOptions from './components/paymentOptions'
 
 function App() {
   const appRouter = createBrowserRouter([
@@ -38,8 +40,8 @@ function App() {
           element : <NotFoundPage/>
         },
         {
-          path  : "/services/:id",
-          element : <PartnerDetail/>
+          path  : "/services/:category",
+          element : <ServiceLists  />
         },
         {
           path: "/partner/:id",
@@ -61,6 +63,15 @@ function App() {
           path : "/applicationUnderReview",
           element : <ApplicationUnderReview/>
         },
+        {
+          path : "/payment-options",
+          element : <PaymentOptions/>
+        },
+        // {
+        //   path : "/testing", 
+        //   element : <ServiceList/>
+        // }
+        
       ]
     },
     {

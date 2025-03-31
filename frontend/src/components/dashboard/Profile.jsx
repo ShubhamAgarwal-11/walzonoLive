@@ -158,7 +158,7 @@ const Profile = () => {
                       onChange={(e) => setTempData({ ...tempData, parlourName: e.target.value })}
                       disabled={!isEditing}
                       placeholder="Enter company name"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500"
+                      className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500"
                     />
                   </div>
                   <div>
@@ -169,7 +169,7 @@ const Profile = () => {
                       onChange={(e) => setTempData({ ...tempData, gstNo: e.target.value })}
                       disabled={!isEditing}
                       placeholder="Enter GST number"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500"
+                      className="w-full px-4 bg-white py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500"
                     />
                   </div>
                   <div>
@@ -180,7 +180,7 @@ const Profile = () => {
                       disabled={!isEditing}
                       placeholder="Enter business address"
                       rows={3}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500"
+                      className="w-full px-4 bg-white py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500"
                     />
                   </div>
                 </div>
@@ -198,7 +198,7 @@ const Profile = () => {
                       onChange={(e) => setTempData({ ...tempData, bankName: e.target.value })}
                       disabled={!isEditing}
                       placeholder="Enter bank name"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500"
+                      className="w-full bg-white px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500"
                     />
                   </div>
                   <div>
@@ -209,7 +209,7 @@ const Profile = () => {
                       onChange={(e) => setTempData({ ...tempData, bankAccountNo: e.target.value })}
                       disabled={!isEditing}
                       placeholder="Enter account number"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500"
+                      className="w-full px-4 bg-white py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500"
                     />
                   </div>
                   <div>
@@ -220,7 +220,7 @@ const Profile = () => {
                       onChange={(e) => setTempData({ ...tempData, ifscCode: e.target.value })}
                       disabled={!isEditing}
                       placeholder="Enter IFSC code"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500"
+                      className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500"
                     />
                   </div>
                 </div>
@@ -242,7 +242,7 @@ const Profile = () => {
                           value={isEditing ? tempData.openingTime : profileData.openingTime}
                           onChange={(e) => setTempData({ ...tempData, openingTime: e.target.value })}
                           disabled={!isEditing}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500"
+                          className="w-full px-4 bg-white py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500"
                         />
                       </div>
                       <div>
@@ -252,7 +252,7 @@ const Profile = () => {
                           value={isEditing ? tempData.closingTime : profileData.closingTime}
                           onChange={(e) => setTempData({ ...tempData, closingTime: e.target.value })}
                           disabled={!isEditing}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500"
+                          className="w-full px-4 bg-white py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500"
                         />
                       </div>
                     </div>
@@ -270,7 +270,7 @@ const Profile = () => {
                             type="button"
                             onClick={() => isEditing && handleDayToggle(day)}
                             disabled={!isEditing}
-                            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                            className={`px-4 py-2 bg-white rounded-full text-sm font-medium transition-colors ${
                               (isEditing ? tempData : profileData).openingDays.includes(day)
                                 ? 'bg-blue-600 text-white'
                                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -298,7 +298,7 @@ const Profile = () => {
                     onChange={(e) => setTempData({ ...tempData, panNo: e.target.value })}
                     disabled={!isEditing}
                     placeholder="Enter PAN number"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500"
+                    className="w-full px-4 bg-white py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500"
                   />
                 </div>
                 <div>
@@ -309,7 +309,7 @@ const Profile = () => {
                     onChange={(e) => setTempData({ ...tempData, panName: e.target.value })}
                     disabled={!isEditing}
                     placeholder="Enter name as per PAN"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500"
+                    className="w-full px-4 bg-white py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:text-gray-500"
                   />
                 </div>
               </div>

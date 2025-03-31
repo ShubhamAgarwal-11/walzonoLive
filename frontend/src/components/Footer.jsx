@@ -158,10 +158,10 @@ const Footer = () => {
         </div>
       </div>
       <div className="text-center m-6">
-        <p className="text-sm">&copy; 2023 Your Company. All rights reserved.</p>
+        <p className="text-sm">&copy; {new Date().getFullYear()} Your Company. All rights reserved.</p>
       </div>
       <hr />
-      <h1 className="text-4xl font-bold mt-6">GlamBook</h1>
+      <h1 className="text-4xl font-bold mt-6">Walzono</h1>
     </footer>
   );
 };

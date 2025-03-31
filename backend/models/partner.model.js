@@ -47,7 +47,21 @@ const partnerSchema = new Schema({
   services: [{
     type: Schema.Types.ObjectId,
     ref: 'Service', // This will reference the Service schema once it's created
-  }]
+  }],
+  bookingId : {
+    type : Schema.Types.ObjectId,
+    ref : 'Booking'
+  },
+  paymentId : {
+    type : Schema.Types.ObjectId,
+    ref : 'Payment'
+  },
+  commissionRate : {
+    type : Number
+  },
+  totalIncomeAmmount : {
+    type : Number
+  }
 }, {
   timestamps: true
 });

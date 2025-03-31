@@ -210,7 +210,7 @@ const handlePhoneChange = (event) => {
         e.preventDefault();
         // console.log(email, password , phone, name);
         try {
-          const response = await axios.post("http://localhost:4000/api/user/register", {name , email , password, phone },{
+          const response = await axios.post("http://localhost:4000/api/user/user-register", {name , email , password, phone },{
             headers : {
               "Content-Type" : "application/json"
             },

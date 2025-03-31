@@ -150,22 +150,35 @@ import { IoBagHandleOutline } from "react-icons/io5";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [search, setSearch] = useState("");
   const { user } = useSelector((store) => store.user);
+
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    // call api for search services based on service name
+    console.log(search);
+  };
 
   return (
     <div className="relative w-full">
       {/* Main Navigation Bar */}
       <div className="bg-black text-white px-4 py-4 flex justify-between items-center">
         {/* Logo */}
-        <div className="text-2xl font-bold">Walzono</div>
+        <div className="text-2xl font-bold">
+          <img className="h-10 w-full rounded" src="https://res.cloudinary.com/daf7blofc/image/upload/v1742589542/kl2suqvae1x3kp9pqi2x.png" alt="" />
+        </div>
+
 
         {/* Search Bar - Hidden on Small Screens */}
         <div className="hidden md:flex w-1/2">
-          <form className="flex w-full">
+          <form className="flex w-full" onSubmit={handleSearch}>
             <input
               type="text"
               placeholder="Search for service"
               className="w-full px-4 py-2 text-black bg-white rounded-l-md focus:outline-none"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
             />
             <button
               type="submit"

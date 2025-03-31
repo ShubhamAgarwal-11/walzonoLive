@@ -1,43 +1,53 @@
-import { createSlice } from "@reduxjs/toolkit";
-
-const initialState = {
-  items: [],
-};
+import { createSlice } from "@reduxjs/toolkit"
 
 const cartSlice = createSlice({
   name: "cart",
-  initialState,
+  initialState: {
+    items: [],
+  },
   reducers: {
     addToCart: (state, action) => {
-      const itemIndex = state.items.findIndex(
-        (item) => item.id === action.payload.id
-      );
-      if (itemIndex >= 0) {
-        state.items[itemIndex].quantity += 1;
+      const item = action.payload
+      const existingItem = state.items.find((i) => i.id === item.id)
+      if (existingItem) {
+        existingItem.quantity += 1
       } else {
-        state.items.push({ ...action.payload, quantity: 1 });
+        state.items.push({ ...item, quantity: 1 })
       }
     },
     removeFromCart: (state, action) => {
-      const itemIndex = state.items.findIndex((item) => item.id === action.payload);
-      if (itemIndex >= 0) {
-        if (state.items[itemIndex].quantity > 1) {
-          state.items[itemIndex].quantity -= 1;
+      const id = action.payload
+      state.items = state.items.filter((item) => item.id !== id)
+    },
+
+    decreaseQuantity: (state, action) => {
+      const id = action.payload;
+      const item = state.items.find((item) => item.id === id);
+
+      if (item) {
+        if (item.quantity > 1) {
+          item.quantity -= 1;
         } else {
-          state.items.splice(itemIndex, 1);
+          state.items = state.items.filter((item) => item.id !== id);
         }
       }
     },
+
+    updateQuantity: (state, action) => {
+      const { id, quantity } = action.payload
+      const item = state.items.find((i) => i.id === id)
+      if (item) {
+        item.quantity = quantity
+      }
+    },
   },
-});
+})
 
-export const { addToCart, removeFromCart } = cartSlice.actions;
-export default cartSlice.reducer;
+export const { addToCart, removeFromCart, decreaseQuantity, updateQuantity } = cartSlice.actions
 
+export const selectCartItems = (state) => state.cart.items
 
-// Selector to get cart items
-export const selectCartItems = (state) => state.cart.items;
+export const selectCartItemById = (state, id) => state.cart.items.find((item) => item.id === id)
 
-// Function to check if an item is in the cart
-export const selectCartItemById = (state, id) => 
-  state.cart.items.find((item) => item.id === id);
+export default cartSlice.reducer
+

@@ -171,7 +171,7 @@ const LandingPage = () => {
       <section className="py-16 px-10 bg-gray-100">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-8 text-black">
-            Restaurant success stories
+            Partners success stories
           </h2>
           <div className="flex flex-wrap mx-4">
             {testimonials.map((testimonial, index) => (

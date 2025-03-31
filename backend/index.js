@@ -22,6 +22,8 @@ app.use(express.urlencoded({extended : true}));
 // router mounting...
 app.use('/api/user', require('./routes/user.route'));
 app.use('/api/partner', require('./routes/partner.route'));
+app.use('/api/service', require('./routes/service.route'));
+app.use('/api/cart', require('./routes/cart.route'));
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);

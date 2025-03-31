@@ -373,12 +373,10 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="mt-8 pt-8 border-t text-center text-sm">
-            <p>&copy; {new Date().getFullYear()} HomeServe. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} Walzono. All rights reserved.</p>
           </div>
         </div>
       </footer>
-
-
       </div>
         
       )}
