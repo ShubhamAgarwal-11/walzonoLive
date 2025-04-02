@@ -1,44 +1,21 @@
 "use client"
 
+// here service types means hair, makeup etc
+
 import { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Home, Star, Clock, Info, Plus, Minus, ShoppingCart, Loader2 } from "lucide-react"
 import { motion } from "framer-motion"
 import { useParams } from "react-router"
+import { useNavigate } from "react-router"
 
 // Import actions from your existing cart slice
 import { addToCart, decreaseQuantity, selectCartItemById } from "../redux/cartSlice"
+import { selectAllBestServicesForMen , selectAllBestServicesForWomen } from "../redux/serviceSlice"
 import axios from "axios"
 import { SERVICE_API_END_POINT } from "../utils/constent"
 
 // Custom UI Components
-const Button = ({ children, className = "", size = "default", variant = "primary", onClick, ...props }) => {
-  const baseStyles = "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background"
-  const sizeStyles = {
-    default: "h-10 py-2 px-4",
-    sm: "h-9 px-3 rounded-md",
-    icon: "h-10 w-10",
-  }
-  const variantStyles = {
-    default: "bg-primary text-primary-foreground hover:bg-primary/90",
-    destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-    outline: "border border-input hover:bg-accent hover:text-accent-foreground",
-    secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-    ghost: "hover:bg-accent hover:text-accent-foreground",
-    link: "underline-offset-4 hover:underline text-primary",
-  }
-
-  return (
-    <button
-      className={`${baseStyles} ${sizeStyles[size]} ${variantStyles[variant]} ${className}`}
-      onClick={onClick}
-      {...props}
-    >
-      {children}
-    </button>
-  )
-}
-
 const Card = ({ children, className = "", ...props }) => {
   return (
     <div className={`rounded-lg border bg-card text-card-foreground shadow-sm ${className}`} {...props}>
@@ -150,13 +127,16 @@ const AlertDescription = ({ children, className = "", ...props }) => {
   )
 }
 
-export default function ServiceComponent() {
+export default function ServicesByTypes() {
   const dispatch = useDispatch()
   const [services, setServices] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [selectedService, setSelectedService] = useState(null)
   const { category } = useParams();
+  // const navigate = useNavigate();
+  
+
+  // console.log("allServicesForMen :->",allServicesForMen)
 
   // console.log("useParams :->",category)
 

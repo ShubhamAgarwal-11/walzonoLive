@@ -11,12 +11,9 @@ import PartnersLandingPage from './components/partners_component/landingPage'
 import Add_Partners1 from './components/partners_component/v1/Add_Partners_Step1'
 import Add_Partners2 from './components/partners_component/v1/Add_Partners_Step2'
 import Add_Partners3 from './components/partners_component/v1/Add_Partners_Step3'
-import Services from './components/Services'
-// import ServiceLists from './components/all_partners'
-import ServiceLists from './components/All_partners'
-import Select_partner from './components/Select_partner'
+import ServicesByTypes from './components/ServicesByTypes'
+import ServicesByGender from './components/ServicesByGender'
 import Booking from './components/Booking'
-import Dashboard from './components/Dashboard'
 import LandingPage from './components/LandingPage'
 import Cart from './components/cart/Cart'
 import ApplicationUnderReview from './components/partners_component/ApplicationUnderReview'
@@ -41,11 +38,11 @@ function App() {
         },
         {
           path  : "/services/:category",
-          element : <ServiceLists  />
+          element : <ServicesByTypes/>
         },
         {
-          path: "/partner/:id",
-          element: <Select_partner/>
+          path : "/:gender",
+          element : <ServicesByGender/>
         },
         {
           path : "/booking",
@@ -105,10 +102,6 @@ function App() {
     {
       path : "/add-partner/step-3",
       element : <Add_Partners3/>
-    },
-    {
-      path : "/services",
-      element : <Services/>
     },
     {
       path : "/partner/dashboard",

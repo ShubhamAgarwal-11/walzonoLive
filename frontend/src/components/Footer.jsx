@@ -1,168 +1,169 @@
-// import React from 'react'
-
-// const Footer = () => {
-//   return (
-//     <div className='mt-auto'>
-//         <footer className="footer bg-base-200 text-base-content p-10">
-//   <nav>
-//     <h6 className="footer-title">Services</h6>
-//     <a className="link link-hover">Branding</a>
-//     <a className="link link-hover">Design</a>
-//     <a className="link link-hover">Marketing</a>
-//     <a className="link link-hover">Advertisement</a>
-//   </nav>
-//   <nav>
-//     <h6 className="footer-title">Company</h6>
-//     <a className="link link-hover">About us</a>
-//     <a className="link link-hover">Contact</a>
-//     <a className="link link-hover">Jobs</a>
-//     <a className="link link-hover">Press kit</a>
-//   </nav>
-//   <nav>
-//     <h6 className="footer-title">Legal</h6>
-//     <a className="link link-hover">Terms of use</a>
-//     <a className="link link-hover">Privacy policy</a>
-//     <a className="link link-hover">Cookie policy</a>
-//   </nav>
-//   <form>
-//     <h6 className="footer-title">Newsletter</h6>
-//     <fieldset className="form-control w-80">
-//       <label className="label">
-//         <span className="label-text">Enter your email address</span>
-//       </label>
-//       <div className="join">
-//         <input
-//           type="text"
-//           placeholder="username@site.com"
-//           className="input input-bordered join-item" />
-//         <button className="btn btn-primary join-item">Subscribe</button>
-//       </div>
-//     </fieldset>
-//   </form>
-// </footer>
-//     </div>
-//   )
-// }
-
-// export default Footer
-
-
-import React from "react";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faFacebook, 
+  faTwitter, 
+  faInstagram, 
+  faLinkedin, 
+  faYoutube 
+} from '@fortawesome/free-brands-svg-icons';
+import { motion } from 'framer-motion';
 
 const Footer = () => {
+  const socialLinks = [
+    { icon: faFacebook, color: '#1877F2', link: '#' },
+    { icon: faTwitter, color: '#1DA1F2', link: '#' },
+    { icon: faInstagram, color: '#E4405F', link: '#' },
+    { icon: faLinkedin, color: '#0A66C2', link: '#' },
+    { icon: faYoutube, color: '#FF0000', link: '#' },
+  ];
+
+  const footerVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { duration: 0.5 } },
+  };
+
+  const linkVariants = {
+    hover: { scale: 1.05, originX: 0 },
+    tap: { scale: 0.95 },
+  };
+
+  // Create motion-wrapped Link components
+  const MotionLink = motion(Link);
+  const MotionA = motion.a;
+
   return (
-    <footer className="bg-black text-white py-10 px-10">
-      <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
-        <div className="mb-6 md:mb-0">
-          <h2 className="text-2xl font-bold mb-4">Stay in touch with us</h2>
-          <div className="flex gap-4">
-            <a href="#" className="text-xl">
-              <i className="fab fa-facebook-f"></i>
-            </a>
-            <a href="#" className="text-xl">
-              <i className="fab fa-instagram"></i>
-            </a>
-          </div>
-          <div className="mt-8">
-            <form className="flex justify-center text-black bg-gray-300 rounded-lg items-center">
-              <input
-                type="text"
-                className="placeholder:text-black w-full max-w-6xl px-6 py-4 bg-gray-400 text-black rounded-l-md focus:outline-none"
-                placeholder="Search for service"
-              />
-              <button
-                type="submit"
-                className="px-6 py-4 bg-[#111827] text-white font-medium rounded-r-md hover:bg-gray-900"
+    <motion.footer 
+      initial="hidden"
+      animate="visible"
+      variants={footerVariants}
+      className="bg-black text-white pt-12"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col md:flex-row justify-between space-y-8 md:space-y-0">
+          
+          {/* Company Section */}
+          <div className="space-y-4">
+            <h3 className="text-2xl font-bold tracking-wide">WALZONO</h3>
+            <div className="flex flex-col space-y-2">
+              <MotionLink 
+                to="/about" 
+                variants={linkVariants}
+                whileHover="hover"
+                whileTap="tap"
+                className="hover:text-purple-300 transition-colors duration-200"
               >
-                Search
-              </button>
-            </form>
+                About Us
+              </MotionLink>
+              <MotionLink 
+                to="/contact" 
+                variants={linkVariants}
+                whileHover="hover"
+                whileTap="tap"
+                className="hover:text-purple-300 transition-colors duration-200"
+              >
+                Contact Us
+              </MotionLink>
+              <MotionLink 
+                to="/blog" 
+                variants={linkVariants}
+                whileHover="hover"
+                whileTap="tap"
+                className="hover:text-purple-300 transition-colors duration-200"
+              >
+                Blog
+              </MotionLink>
+            </div>
+          </div>
+
+          {/* Legal Section */}
+          <div className="space-y-4">
+            <h3 className="text-2xl font-bold tracking-wide">Legal</h3>
+            <div className="flex flex-col space-y-2">
+              <MotionLink 
+                to="/privacy" 
+                variants={linkVariants}
+                whileHover="hover"
+                whileTap="tap"
+                className="hover:text-purple-300 transition-colors duration-200"
+              >
+                Privacy Policy
+              </MotionLink>
+              <MotionLink 
+                to="/terms" 
+                variants={linkVariants}
+                whileHover="hover"
+                whileTap="tap"
+                className="hover:text-purple-300 transition-colors duration-200"
+              >
+                Terms of Service
+              </MotionLink>
+            </div>
+          </div>
+
+          {/* Social & Contact Section */}
+          <div className="space-y-4">
+            <h3 className="text-2xl font-bold tracking-wide">Connect With Us</h3>
+            <div className="flex space-x-4">
+              {socialLinks.map((social, index) => (
+                <MotionA
+                  key={index}
+                  href={social.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.2, y: -5 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="p-2 rounded-full bg-white bg-opacity-10 hover:bg-opacity-20 transition-all duration-300"
+                  style={{ color: social.color }}
+                >
+                  <FontAwesomeIcon icon={social.icon} className="text-2xl" />
+                </MotionA>
+              ))}
+            </div>
+            <div className="mt-4 space-y-2">
+              <p className="flex items-center">
+                <span className="mr-2">📧</span> walzonowithus@gmail.com
+              </p>
+              <p className="flex items-center">
+                <span className="mr-2">📞</span> +1 234 567 890
+              </p>
+            </div>
           </div>
         </div>
-        <div className="flex flex-col gap-4">
-          <h2 className="text-2xl font-bold mb-4">About us</h2>
-          <ul className="list-none">
-            <li>
-              <a href="#" className="hover:underline">
-                About Press
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:underline">
-                Media Kit
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:underline">
-                Careers News
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:underline">
-                Support
-              </a>
-            </li>
-          </ul>
-        </div>
 
-        <div className="flex flex-col gap-4">
-          <h2 className="text-2xl font-bold mb-4">For Beauty Parlours</h2>
-          <ul className="list-none">
-            <li>
-              <a href="#" className="hover:underline">
-              Partnership Collaboration
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:underline">
-                List your parlour For
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:underline">
-                For Businesses
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:underline">
-                Support
-              </a>
-            </li>
-          </ul>
-        </div>
-
-        <div className="flex flex-col gap-4">
-          <h2 className="text-2xl font-bold mb-4">Follow us</h2>
-          <ul className="list-none">
-            <li>
- <a href="#" className="hover:underline">
-                Facebook
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:underline">
-                Twitter
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:underline">
-                LinkedIn
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:underline">
-                Instagram
-              </a>
-            </li>
-          </ul>
+        {/* Copyright Section */}
+        <div className="border-t border-white border-opacity-20 mt-12 py-8">
+          <div className="text-center text-opacity-80">
+            <motion.p 
+              whileHover={{ scale: 1.02 }}
+              className="text-sm font-light"
+            >
+              © {new Date().getFullYear()} Walzono. All rights reserved.
+              <br className="md:hidden" />
+              <span className="mx-2 hidden md:inline-block">|</span>
+              Designed with ❤️ in Your Location
+            </motion.p>
+            <div className="mt-4 flex justify-center space-x-4">
+              <MotionLink 
+                to="/privacy" 
+                whileHover={{ y: -2 }}
+                className="hover:text-purple-300 text-sm"
+              >
+                Privacy Policy
+              </MotionLink>
+              <MotionLink 
+                to="/terms" 
+                whileHover={{ y: -2 }}
+                className="hover:text-purple-300 text-sm"
+              >
+                Terms of Service
+              </MotionLink>
+            </div>
+          </div>
         </div>
       </div>
-      <div className="text-center m-6">
-        <p className="text-sm">&copy; {new Date().getFullYear()} Your Company. All rights reserved.</p>
-      </div>
-      <hr />
-      <h1 className="text-4xl font-bold mt-6">Walzono</h1>
-    </footer>
+    </motion.footer>
   );
 };
 

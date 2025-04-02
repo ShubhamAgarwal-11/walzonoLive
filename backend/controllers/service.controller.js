@@ -55,16 +55,21 @@ const Service = require('../models/services.model');
 exports.getBestServices = async(req,res)=>{
     try {
         
-        const menServices = await Service.find({serviceCategory : "Men's"}).sort({bookingCount : -1}).limit(5)
-        const womenServices = await Service.find({serviceCategory : "Women's"}).sort({bookingCount : -1}).limit(5)
-        const bothServices = await Service.find({serviceCategory : "Both"}).sort({bookingCount : -1}).limit(5)
+        const menServices = await Service.find({serviceCategory : "Men's"}).sort({bookingCount : -1})
+        const womenServices = await Service.find({serviceCategory : "Women's"}).sort({bookingCount : -1})
+        const bothServices = await Service.find({serviceCategory : "Both"}).sort({bookingCount : -1})
         menServices.push(...bothServices)
         womenServices.push(...bothServices)
+
+        const menServicesTop4 = menServices.slice(0, 4);
+        const womenServicesTop4 = womenServices.slice(0, 4);
 
         return res.status(200).json({
             success : true,
             menServices : menServices,
-            womenServices : womenServices
+            womenServices : womenServices,
+            menServicesTop5 : menServicesTop4,
+            womenServicesTop5 : womenServicesTop4
         })
 
     } catch (error) {
