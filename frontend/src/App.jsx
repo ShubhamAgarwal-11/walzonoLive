@@ -21,6 +21,7 @@ import AppDashBoard from './components/dashboard/AppDashBoard'
 import PartnerRegistration from './components/partners_component/PartnerRegistration'
 import OTPLogin from './components/partners_component/OTPLogin'
 import PaymentOptions from './components/paymentOptions'
+import BlogList from './components/blog/BlogList'
 
 function App() {
   const appRouter = createBrowserRouter([
@@ -63,6 +64,10 @@ function App() {
         {
           path : "/payment-options",
           element : <PaymentOptions/>
+        },
+        {
+          path : "/blog",
+          element : <BlogList/>
         },
         // {
         //   path : "/testing", 
