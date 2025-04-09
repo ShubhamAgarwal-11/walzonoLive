@@ -1,97 +1,152 @@
 "use client"
 
-import { useState,useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { motion } from "framer-motion"
-import { Link } from "react-router-dom"
-import { selectCartItems, removeFromCart, updateQuantity } from "../../redux/cartSlice"
+import { Link, useNavigate } from "react-router-dom"
+import { 
+  selectCartItems, 
+  removeFromCart, 
+  updateQuantity, 
+  setCartItems,
+  clearCart 
+} from "../../redux/cartSlice"
 import { ShoppingBag, ArrowLeft, Trash2, Plus, Minus } from "lucide-react"
-import "./Cart.css"
-import { useNavigate } from "react-router-dom"
-// import { useSelector } from "react-redux"
 import axios from "axios"
 import { CART_API_END_POINT } from "../../utils/constent"
+import { toast } from "react-hot-toast"
+import "./Cart.css"
 
 const CartPage = () => {
-  const cartItems = useSelector(selectCartItems)
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const { user } = useSelector((store) => store.user);
-  // const [services, setServices] = useState([])
-  console.log("cartIems: ",cartItems)
-  
+  const cartItems = useSelector(selectCartItems)
+  const { user } = useSelector((store) => store.user)
 
+  const [loading, setLoading] = useState(false)
+  const [processingId, setProcessingId] = useState(null)
+  const [isInitialLoad, setIsInitialLoad] = useState(true)
 
-  // cartItems.map(item => cartServices(item))
+  // ✅ Updated getCart to merge local and server items
+  const getCart = useCallback(async () => {
+    if (!user?._id) return
 
+    try {
+      const response = await axios.get(`${CART_API_END_POINT}/getCart`, {
+        params: { userId: user._id },
+        withCredentials: true
+      })
 
-  // console.log("services : ",services)
+      const fetchedItems = response?.data?.cart?.cartItems || []
 
-  // Calculate subtotal
+      if (response.data.success && isInitialLoad) {
+        const currentCart = [...cartItems]
+
+        const mergedCart = [...fetchedItems]
+        currentCart.forEach(localItem => {
+          const exists = fetchedItems.find(item => item.id === localItem.id)
+          if (!exists) {
+            mergedCart.push(localItem)
+          }
+        })
+
+        dispatch(clearCart())
+        dispatch(setCartItems(mergedCart))
+        setIsInitialLoad(false)
+      }
+    } catch (error) {
+      toast.error("Failed to load cart")
+      console.error("Error fetching cart:", error)
+    }
+  }, [user, dispatch, isInitialLoad, cartItems])
+
   const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0)
-
-  // Calculate tax (assuming 10%)
   const tax = subtotal * 0.1
-
   const platformFee = 7
+  const total = subtotal + tax + platformFee
 
-  // Calculate total
-  const total = subtotal + tax
+  const handleQuantityUpdate = async (id, newQuantity) => {
+    const originalQuantity = cartItems.find(item => item.id === id)?.quantity
+    dispatch(updateQuantity({ id, quantity: newQuantity }))
 
-  // Handle quantity increase
-  const increaseQuantity = (id, currentQuantity) => {
-    dispatch(updateQuantity({ id, quantity: currentQuantity + 1 }))
+    if (user) {
+      try {
+        setProcessingId(id)
+        await axios.post(
+          `${CART_API_END_POINT}/updateCart`,
+          { userId: user._id, serviceId: id, quantity: newQuantity },
+          { withCredentials: true }
+        )
+      } catch (error) {
+        toast.error("Failed to update quantity")
+        dispatch(updateQuantity({ id, quantity: originalQuantity }))
+      } finally {
+        setProcessingId(null)
+      }
+    }
   }
 
-  // Handle quantity decrease
-  const decreaseQuantity = (id, currentQuantity) => {
+  const handleIncreaseQuantity = async (id, currentQuantity) => {
+    const newQuantity = currentQuantity + 1
+    await handleQuantityUpdate(id, newQuantity)
+  }
+
+  const handleDecreaseQuantity = async (id, currentQuantity) => {
     if (currentQuantity > 1) {
-      dispatch(updateQuantity({ id, quantity: currentQuantity - 1 }))
+      const newQuantity = currentQuantity - 1
+      await handleQuantityUpdate(id, newQuantity)
+    } else {
+      await handleRemoveItem(id)
+    }
+  }
+
+  const handleRemoveItem = async (id) => {
+    if (user) {
+      try {
+        setProcessingId(id)
+        await axios.post(
+          `${CART_API_END_POINT}/deleteFromCart`,
+          { userId: user._id, serviceId: id },
+          { withCredentials: true }
+        )
+        dispatch(removeFromCart(id))
+      } catch (error) {
+        toast.error("Failed to remove item")
+      } finally {
+        setProcessingId(null)
+      }
     } else {
       dispatch(removeFromCart(id))
     }
   }
 
-  const handleCheckout = async() => {
-    // call an api to post cart data into backend
-    if(!user){
+  const handleCheckout = async () => {
+    if (!user) {
       navigate("/login")
       return
     }
-    
+
+    setLoading(true)
     try {
-
-      const response = await axios.post(`${CART_API_END_POINT}/createCart`,{
-        userId : user._id,
-        cartItems : cartItems
-      },{
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      })
-
-      console.log(response)
-      if(response.data.success){
-        navigate("/booking");
-        return response.data.message
-      }
-      
+      await axios.post(
+        `${CART_API_END_POINT}/createCart`,
+        { userId: user._id, cartItems },
+        { withCredentials: true }
+      )
+      setIsInitialLoad(true)
+      await getCart()
+      navigate("/booking")
     } catch (error) {
-      console.log(error)
-      return error?.response?.data?.message
+      toast.error("Checkout failed. Please try again.")
+    } finally {
+      setLoading(false)
     }
   }
 
-  // Handle item removal
-  const handleRemoveItem = (id) => {
-    dispatch(removeFromCart(id))
-  }
-
-  // Scroll to top on page load
   useEffect(() => {
     window.scrollTo(0, 0)
-  }, [])
+    getCart()
+  }, [getCart])
 
   return (
     <div className="cart-page-container w-full">
@@ -166,7 +221,8 @@ const CartPage = () => {
                     <motion.button
                       className="quantity-btn"
                       whileTap={{ scale: 0.9 }}
-                      onClick={() => decreaseQuantity(item.id, item.quantity)}
+                      onClick={() => handleDecreaseQuantity(item.id, item.quantity)}
+                      disabled={processingId === item.id}
                     >
                       <Minus size={16} />
                     </motion.button>
@@ -174,7 +230,8 @@ const CartPage = () => {
                     <motion.button
                       className="quantity-btn"
                       whileTap={{ scale: 0.9 }}
-                      onClick={() => increaseQuantity(item.id, item.quantity)}
+                      onClick={() => handleIncreaseQuantity(item.id, item.quantity)}
+                      disabled={processingId === item.id}
                     >
                       <Plus size={16} />
                     </motion.button>
@@ -186,6 +243,7 @@ const CartPage = () => {
                     className="remove-item-btn"
                     whileTap={{ scale: 0.9 }}
                     onClick={() => handleRemoveItem(item.id)}
+                    disabled={processingId === item.id}
                   >
                     <Trash2 size={18} />
                   </motion.button>
@@ -224,8 +282,14 @@ const CartPage = () => {
                 ₹{total?.toFixed(2)}
               </motion.span>
             </div>
-            <motion.button className="checkout-btn" onClick={handleCheckout} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-              Proceed to Checkout
+            <motion.button 
+              className="checkout-btn" 
+              onClick={handleCheckout} 
+              whileHover={{ scale: 1.02 }} 
+              whileTap={{ scale: 0.98 }}
+              disabled={loading}
+            >
+              {loading ? "Processing..." : "Proceed to Checkout"}
             </motion.button>
             <div className="payment-methods">
               <p>We Accept:</p>
@@ -244,4 +308,3 @@ const CartPage = () => {
 }
 
 export default CartPage
-

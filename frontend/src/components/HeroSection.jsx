@@ -173,7 +173,7 @@ const HomeContent = () => {
               <h2 className="text-4xl font-bold text-gray-900 mb-2">Best Services For Women</h2>
               <p className="text-gray-600 ">Elevated beauty experiences crafted for you</p>
             </div>
-            <button onClick={() => navigate('/services/women')} className="mt-6 md:mt-0 bg-gray-900 text-white px-8 py-3 rounded-2xl font-bold hover:bg-gray-800 transition-all flex items-center gap-2 shadow-lg hover:shadow-xl">
+            <button onClick={() => navigate('/women')} className="mt-6 md:mt-0 bg-gray-900 text-white px-8 py-3 rounded-2xl font-bold hover:bg-gray-800 transition-all flex items-center gap-2 shadow-lg hover:shadow-xl">
               View All
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -197,7 +197,7 @@ const HomeContent = () => {
               <h2 className="text-4xl font-bold mb-2">Best Services For Men</h2>
               <p className="text-gray-300 font-light">Premium grooming redefined</p>
             </div>
-            <button onClick={() => navigate('/services/men')} className="mt-6 md:mt-0 bg-white/10 backdrop-blur-sm text-white px-8 py-3 rounded-2xl font-bold hover:bg-white/20 transition-all flex items-center gap-2 border border-white/20">
+            <button onClick={() => navigate('/men')} className="mt-6 md:mt-0 bg-white/10 backdrop-blur-sm text-white px-8 py-3 rounded-2xl font-bold hover:bg-white/20 transition-all flex items-center gap-2 border border-white/20">
               View All
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />

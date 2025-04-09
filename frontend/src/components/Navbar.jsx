@@ -147,12 +147,19 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { IoBagHandleOutline } from "react-icons/io5";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { USER_API_END_POINT } from "../utils/constent";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "../redux/userSlice";
+import { selectCartItems } from "../redux/cartSlice";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [search, setSearch] = useState("");
   const { user } = useSelector((store) => store.user);
-
+  const dispatch = useDispatch();
+  const cartItems = useSelector(selectCartItems);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -160,15 +167,32 @@ const Navbar = () => {
     console.log(search);
   };
 
+  const handleLogOut = async () => {
+    try {
+      // call api for logout
+
+      const response = await axios.get(`${USER_API_END_POINT}/logout`, { withCredentials: true });
+      if(response.data.success) {
+        toast.success(response.data.message);
+        // console.log(response.data);
+        dispatch(logoutUser());
+      }
+
+      console.log("logout");
+    } catch (err) {
+      console.log(err);
+      toast.error("Logout Failed");
+    }
+  }
+
   return (
     <div className="relative w-full">
       {/* Main Navigation Bar */}
       <div className="bg-black text-white px-4 py-4 flex justify-between items-center">
         {/* Logo */}
-        <div className="text-2xl font-bold">
+        <Link to={"/"} className="text-2xl font-bold">
           <img className="h-10 w-full rounded" src="https://res.cloudinary.com/daf7blofc/image/upload/v1742589542/kl2suqvae1x3kp9pqi2x.png" alt="" />
-        </div>
-
+        </Link>
 
         {/* Search Bar - Hidden on Small Screens */}
         <div className="hidden md:flex w-1/2">
@@ -195,11 +219,36 @@ const Navbar = () => {
             Add Partners
           </Link>
           <a href="#help" className="hover:text-gray-300">Help</a>
-          <Link to="/cart">
+
+          {/* <Link to="/cart">
             <IoBagHandleOutline size={25} />
+          </Link> */}
+
+          <Link to={'/cart'} className="cart-icon">
+            <IoBagHandleOutline className="text-white" size={24} />
+            {
+              cartItems.length > 0 &&
+              <span className="cart-count">{cartItems.length}</span>
+            }
           </Link>
           {user ? (
-            <div>{user?.name}</div>
+            <div className="dropdown dropdown-end">
+              <div tabIndex={0} role="button" className="hover:text-gray-300">
+                {user?.name}
+              </div>
+              <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-black text-white z-10 rounded-box w-52 mt-4">
+                <li>
+                  <Link to="/profile" className="text-white hover:bg-gray-700">
+                    Profile
+                  </Link>
+                </li>
+                <li>
+                  <button onClick={handleLogOut} className="text-white hover:bg-gray-700">
+                    Logout
+                  </button>
+                </li>
+              </ul>
+            </div>
           ) : (
             <Link
               to="/login"
@@ -254,7 +303,23 @@ const Navbar = () => {
             Go to Cart
           </Link>
           {user ? (
-            <div className="py-2">{user?.name}</div>
+            <>
+              <div className="pt-2 font-medium">{user?.name}</div>
+              <Link
+                to="/profile"
+                className="py-2 hover:text-gray-300"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Profile
+              </Link>
+              <Link
+                to="/logout"
+                className="py-2 hover:text-gray-300"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Logout
+              </Link>
+            </>
           ) : (
             <Link
               to="/login"

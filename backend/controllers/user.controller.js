@@ -56,58 +56,79 @@ exports.register = async(req,res)=>{
     }
 }
 
-exports.login = async(req,res)=>{
+exports.login = async (req, res) => {
     try {
-        const {email , password} = req.body;
-        if(!email || !password){
+        const { email, password } = req.body;
+        if (!email || !password) {
             return res.status(401).json({
-                success : false,
-                message : "All Fiends Are Required."
-            })
+                success: false,
+                message: "All fields are required."
+            });
         }
 
-        const userExist = await User.findOne({email});
-        if(!userExist){
+        const userExist = await User.findOne({ email });
+        if (!userExist) {
             return res.status(401).json({
-                success : false,
-                message : "User not exist....please create account"
-            })
-        } 
-        const match = await bcrypt.compare(password , userExist.password)
-        if(!match){
-            return res.status(401).json({
-                success : false,
-                message : "incorrect password"
-            })
+                success: false,
+                message: "User does not exist. Please create an account."
+            });
         }
+
+        const match = await bcrypt.compare(password, userExist.password);
+        if (!match) {
+            return res.status(401).json({
+                success: false,
+                message: "Incorrect password."
+            });
+        }
+
         const payload = {
-            id : userExist._id,
-            email : userExist.email
-        }
-        // console.log(payload);
-        const token = jwt.sign(payload,process.env.JWT_SECRET_KEY,{expiresIn : "1d"});
-        return res.status(200).cookie("token",token,{expiresIn : "1d"}).json({
-            success : true,
-            message : "Welcome Back Buddy!!",
-            user : userExist
-        })
-        
+            id: userExist._id,
+            email: userExist.email
+        };
+
+        const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: "1h" });
+
+        // Set cookie with proper options
+        const cookieOptions = {
+            maxAge: 60 * 60 * 1000, // 1 hour in milliseconds
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax' // Adjust based on your cross-site requirements
+        };
+
+        return res.status(200)
+            .cookie("token", token, cookieOptions)
+            .json({
+                success: true,
+                message: "Welcome Back Buddy!!",
+                user: userExist // Consider sending a sanitized user object (without password)
+            });
+
     } catch (error) {
-        console.log(error);
+        console.error("Login error:", error);
         res.status(500).json({
-            success : false,
-            message : "Error While login user."
-        })
+            success: false,
+            message: "Error while logging in user."
+        });
     }
-}
+};
 
-exports.logout = async(req,res)=>{
-    return res.clearCookie("token").json({
-        success : true,
-        message : "logged out successfully"
-    })
-}
+exports.logout = async (req, res) => {
+    // Clear cookie with same options used in login
+    const cookieOptions = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+    };
 
+    return res.clearCookie("token", cookieOptions)
+        .status(200)
+        .json({
+            success: true,
+            message: "Logged out successfully."
+        });
+};
 // exports.bookmark = async(req,res)=>{
 //     try {
 //         const currentUserId = req.body.id;

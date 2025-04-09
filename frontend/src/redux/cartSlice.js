@@ -40,10 +40,19 @@ const cartSlice = createSlice({
         item.quantity = quantity
       }
     },
+    clearCart: (state) => {
+      state.items = [] // Match the initial state property name
+    },
+    
+    setCartItems: (state, action) => {
+      // Changed from appending to replacing items
+      state.items = action.payload
+    },
+    
   },
 })
 
-export const { addToCart, removeFromCart, decreaseQuantity, updateQuantity } = cartSlice.actions
+export const { addToCart, removeFromCart, decreaseQuantity, updateQuantity, clearCart, setCartItems } = cartSlice.actions
 
 export const selectCartItems = (state) => state.cart.items
 

@@ -1,16 +1,19 @@
 "use client"
 
-// here service coming based on gender like men , women
+// here service gneder like men , women etc
 
 import { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Home, Star, Clock, Info, Plus, Minus, ShoppingCart, Loader2 } from "lucide-react"
 import { motion } from "framer-motion"
 import { useParams } from "react-router"
-import { selectAllBestServicesForMen, selectAllBestServicesForWomen } from "../redux/serviceSlice"
+import { useNavigate } from "react-router"
 
 // Import actions from your existing cart slice
-import { addToCart, decreaseQuantity, selectCartItemById } from "../redux/cartSlice"
+import { addToCart, decreaseQuantity, selectCartItemById, selectCartItems } from "../redux/cartSlice"
+import axios from "axios"
+import { SERVICE_API_END_POINT } from "../utils/constent"
+
 // Custom UI Components
 const Card = ({ children, className = "", ...props }) => {
   return (
@@ -123,26 +126,49 @@ const AlertDescription = ({ children, className = "", ...props }) => {
   )
 }
 
-export default function ServicesByGender() {
+export default function ServicesByTypes() {
   const dispatch = useDispatch()
   const [services, setServices] = useState([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null);
-  const {gender} = useParams()
-  // console.log(gender)
+  const [error, setError] = useState(null)
+  const { gender } = useParams();
+  // const allItems = useSelector(selectCartItems)
+  // const navigate = useNavigate();
+  // console.log("All items in cart in gernder file",allItems)
 
+  console.log(gender)
 
-  const setServicesForMenAndWomen =  () => {
-    const allServicesForMen = useSelector(selectAllBestServicesForMen)
-    const allServicesForWomen = useSelector(selectAllBestServicesForWomen)
-    if (gender === "men") {
-      console.log(gender)
-      setServices(allServicesForMen)
-    } else if (gender === "women") {
-      setServices(allServicesForWomen)
+  // Fetch services from API
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        setLoading(true)
+        // Replace with your actual API endpoint
+        const response = await axios.get(`${SERVICE_API_END_POINT}/getBestServices`, { params: { service: gender } })
+        console.log(response.data)
+        if (!response.data.success) {
+          throw new Error(`Error: ${response.status}`)
+        }
+        if(gender === "women"){
+          setServices(response.data.womenServices)
+        } 
+        if(gender === "men"){
+          setServices(response.data.menServices)
+        }
+        
+        setError(null)
+      } catch (err) {
+        console.error("Failed to fetch services:", err)
+        setError("Failed to load services. Please try again later.")
+        // For demo purposes, load sample data if API fails
+        setServices([])
+      } finally {
+        setLoading(false)
+      }
     }
-  }
 
+    fetchServices()
+  }, [])
 
   // Service Card Component
  const ServiceCard = ({ service }) => {
@@ -161,8 +187,9 @@ export default function ServicesByGender() {
           rating: service.rating,
           duration: service.duration
         })
+
       )
-      // console.log("service added to cart" , service.duration)
+      console.log("service added to cart" )
     }
 
     const handleRemoveFromCart = () => {
@@ -315,7 +342,7 @@ export default function ServicesByGender() {
         </div>
       ) : (
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
           initial="hidden"
           animate="show"
           variants={{

@@ -25,9 +25,12 @@ const userSlice = createSlice({
         },
         getPartnerBankInfo:(state,action)=>{
             state.partnerBankInfo = action.payload
+        },
+        logoutUser: (state) => {
+            state.user = null;
         }
     }
 });
 
-export const {getUser , addLocation , getPartnerBankInfo , getPartnerInfo , getPartnerDocument} = userSlice.actions;
+export const {getUser , addLocation , getPartnerBankInfo , getPartnerInfo , getPartnerDocument, logoutUser} = userSlice.actions;
 export default userSlice.reducer
