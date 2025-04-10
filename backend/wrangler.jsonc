@@ -1,6 +1,0 @@
-{
-    "name": "worker-name",
-    "compatibility_date": "2025-04-10",
-    "main": "index.js" // 👈 Add this line
-  }
-  
