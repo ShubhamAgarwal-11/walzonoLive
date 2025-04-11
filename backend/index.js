@@ -1,8 +1,4 @@
 require('dotenv').config({path : "./.env"});
-require("@babel/register")({
-    extensions: [".js", ".jsx"],
-    presets: ["@babel/preset-env", "@babel/preset-react"]
-  });  
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 5000;
@@ -12,7 +8,7 @@ const cors = require('cors');
 
 app.use(cookieParser());
 const corsOptions = {
-    origin : "http://localhost:5173",
+    origin : true,
     credentials : true
 }
 app.use(cors(corsOptions));
