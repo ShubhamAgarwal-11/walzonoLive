@@ -1,8 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { CreditCard, Wallet } from "lucide-react"
-
+import { CreditCard, Wallet } from "lucide-react" 
 export default function PaymentOptions() {
   const [paymentMethod, setPaymentMethod] = useState("cod")
 
@@ -96,6 +95,7 @@ export default function PaymentOptions() {
               </div>
 
               <div className="border-b"></div>
+
 
               {/* Total */}
               <div className="flex justify-between font-medium">
