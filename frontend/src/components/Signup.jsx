@@ -5,6 +5,7 @@ import {toast} from 'react-hot-toast'
 import axios from "axios";
 import {useNavigate} from 'react-router-dom'
 import { Link } from 'react-router';
+import { USER_API_END_POINT } from '../utils/constent';
 
 function Signup() {
   const [email, setEmail] = useState('');
@@ -32,7 +33,7 @@ const handlePhoneChange = (event) => {
         e.preventDefault();
         // console.log(email, password , phone, name);
         try {
-          const response = await axios.post("http://localhost:4000/api/user/user-register", {name , email , password, phone },{
+          const response = await axios.post(`${USER_API_END_POINT}/user-register`, {name , email , password, phone },{
             headers : {
               "Content-Type" : "application/json"
             },
