@@ -20,7 +20,7 @@ import ApplicationUnderReview from './components/partners_component/ApplicationU
 import AppDashBoard from './components/dashboard/AppDashBoard'
 import PartnerRegistration from './components/partners_component/PartnerRegistration'
 import OTPLogin from './components/partners_component/OTPLogin'
-import PaymentOption from './components/PaymentOptions.jsx'
+import PaymentOption from './components/PaymentOptions'
 import BlogList from './components/blog/BlogList'
 
 function App() {
