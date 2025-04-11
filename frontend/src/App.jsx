@@ -20,7 +20,7 @@ import ApplicationUnderReview from './components/partners_component/ApplicationU
 import AppDashBoard from './components/dashboard/AppDashBoard'
 import PartnerRegistration from './components/partners_component/PartnerRegistration'
 import OTPLogin from './components/partners_component/OTPLogin'
-import PaymentOptions from './components/PaymentOptions'
+import PaymentOption from './components/PaymentOptions.jsx'
 import BlogList from './components/blog/BlogList'
 
 function App() {
@@ -63,7 +63,7 @@ function App() {
         },
         {
           path : "/payment-options",
-          element : <PaymentOptions/>
+          element : <PaymentOption/>
         },
         {
           path : "/blog",
