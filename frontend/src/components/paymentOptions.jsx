@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { CreditCard, Wallet } from "lucide-react" 
-export default function PaymentOptions() {
+export default function PaymentOption() {
   const [paymentMethod, setPaymentMethod] = useState("cod")
 
   return (
