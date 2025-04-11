@@ -25,7 +25,7 @@ function Login() {
         e.preventDefault();
         console.log(email, password);
         try {
-          const response = await axios.post(`${USER_API_END_POINT}/api/user/login`, {email , password},{
+          const response = await axios.post(`${USER_API_END_POINT}/login`, {email , password},{
             headers : {
               "Content-Type" : "application/json"
             },
