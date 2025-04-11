@@ -272,8 +272,8 @@ exports.sendEmail = async(req,res)=>{
             from: "walzonowithus@gmail.com", 
             to,
             subject : "Welcome to Walzono!",
-            html : <div><h1>Hello {name}</h1><p>Welcome to our platform! We're excited to have you.</p></div>
-          });
+            html: `<div><h1>Hello ${name}</h1><p>Welcome to our platform! We're excited to have you.</p></div>`
+        });
       
           res.json({ success: true, message: "Email sent", data: emailResponse });
     }catch (error) {
