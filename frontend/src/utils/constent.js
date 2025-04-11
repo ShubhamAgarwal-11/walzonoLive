@@ -1,7 +1,7 @@
-export const USER_API_END_POINT = "http://localhost:4000/api/user"
+export const USER_API_END_POINT = "https://entire-jean-walzono-a05ed878.koyeb.app/api/user"
 
-export const PARTNER_API_END_POINT = "http://localhost:4000/api/partner"
+export const PARTNER_API_END_POINT = "https://entire-jean-walzono-a05ed878.koyeb.app/api/partner"
 
-export const SERVICE_API_END_POINT = "http://localhost:4000/api/service"
+export const SERVICE_API_END_POINT = "https://entire-jean-walzono-a05ed878.koyeb.app/api/service"
 
-export const CART_API_END_POINT = "http://localhost:4000/api/cart"
+export const CART_API_END_POINT = "https://entire-jean-walzono-a05ed878.koyeb.app/api/cart"
