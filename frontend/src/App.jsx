@@ -7,7 +7,7 @@ import NotFoundPage from './components/404'
 import Signup from './components/Signup'
 import Temp from './components/Temp'
 import {Toaster} from 'react-hot-toast'
-import PartnersLandingPage from './components/partners_component/landingPage'
+import PartnersLandingPage from './components/partners_component/LandingPage'
 import Add_Partners1 from './components/partners_component/v1/Add_Partners_Step1'
 import Add_Partners2 from './components/partners_component/v1/Add_Partners_Step2'
 import Add_Partners3 from './components/partners_component/v1/Add_Partners_Step3'
@@ -20,7 +20,7 @@ import ApplicationUnderReview from './components/partners_component/ApplicationU
 import AppDashBoard from './components/dashboard/AppDashBoard'
 import PartnerRegistration from './components/partners_component/PartnerRegistration'
 import OTPLogin from './components/partners_component/OTPLogin'
-import PaymentOptions from './components/paymentOptions'
+import PaymentOptions from './components/PaymentOptions'
 import BlogList from './components/blog/BlogList'
 
 function App() {
