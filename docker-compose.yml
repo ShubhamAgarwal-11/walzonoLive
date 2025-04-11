@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.3'
 
 services:
   backend:
@@ -9,7 +9,6 @@ services:
     volumes:
       - ./backend:/app
 
-
   frontend:
     build: ./frontend
     container_name: frontend
@@ -17,5 +16,6 @@ services:
       - "5173:5173"
     volumes:
       - ./frontend:/app
+      - /app/node_modules  # Add this to preserve node_modules
     depends_on:
       - backend
