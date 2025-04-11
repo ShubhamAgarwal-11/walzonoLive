@@ -2,7 +2,7 @@ const Partner = require('../models/partner.model');
 const Profile = require('../models/partnerProfile');
 const Service = require('../models/services.model');
 const {uploadOnCloudinary} = require('../config/cloudinary');
-const emailTemplateForOTP = require("../emails/emailForOTP");
+const {emailTemplateForOTP} = require("../emails/emailForOTP");
 const sendEmail  = require('../config/mailer');
 
 exports.RegisterPartners = async (req, res) => {

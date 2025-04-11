@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/user.controller');
-const {upload} = require('../middlewares/multer.middleware');
-const partnerController = require('../controllers/partner.controller');
 
 
 // user routes
@@ -12,6 +10,4 @@ router.post('/login',userController.login);
 router.get('/logout',userController.logout);
 
 
-// testing email
-router.post('/send-email',userController.send);
 module.exports = router;

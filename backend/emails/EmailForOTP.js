@@ -1,16 +1,3 @@
-// const emailTemplateForOTP = (otp) => `
-//   <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); text-align: center;">
-//     <h2 style="color: #007bff;">WALZONO OTP Verification</h2>
-//     <p>Your One-Time Password (OTP) is:</p>
-//     <div style="font-size: 24px; font-weight: bold; color: #4CAF50; margin: 20px 0;">${otp}</div>
-//     <p>This OTP is valid for 10 minutes. Do not share it with anyone.</p>
-//     <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
-//     <p style="color: #888;">&copy; WALZONO. All rights reserved.</p>
-//   </div>
-// `;
-
-// module.exports = emailTemplateForOTP;
-
 
 const emailTemplateForOTP = (otp,name) => `
 <html lang="en">
@@ -116,4 +103,4 @@ const emailTemplateForOTP = (otp,name) => `
 </body>
 </html>`;
 
-module.exports = emailTemplateForOTP;
+module.exports = {emailTemplateForOTP};

@@ -1,14 +1,6 @@
 const User = require('../models/user.model');
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
-const { Resend } = require("resend");
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-// const { render } = require("@react-email/render");
-// const CustomTemplate = require("../emails/applicationReviewEmail");
-
-const sendEmail = require('../config/mailer');
-const emailTemplate = require("../emails/emailTemplate");
 
 exports.register = async(req,res)=>{
     try{
@@ -258,46 +250,3 @@ exports.logout = async (req, res) => {
 //         })
 //     }
 // }
-exports.sendEmail = async(req,res)=>{
-    const { to, name } = req.body;
-    try {
-        // const emailHtml = render(CustomTemplate({name}));
-        // console.log(resend.emails)
-        // const emailHtml = render(<CustomTemplate name={name} />);
-        // const emailHtml = render(React.createElement(CustomTemplate, { name })); // ✅ Fix JSX issue
-
-        // console.log(to, name);
-
-        const emailResponse = await resend.emails.send({
-            from: "walzonowithus@gmail.com", 
-            to,
-            subject : "Welcome to Walzono!",
-            html: `<div><h1>Hello ${name}</h1><p>Welcome to our platform! We're excited to have you.</p></div>`
-        });
-      
-          res.json({ success: true, message: "Email sent", data: emailResponse });
-    }catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-
-    }
-
-}
-
-
-exports.send = async (req, res) => {
-    const { email, name, message } = req.body;
-
-  if (!email || !name || !message) {
-    return res.status(400).json({ error: "Missing required fields" });
-  }
-
-  const htmlContent = emailTemplate(name, message);
-
-  try {
-    await sendEmail(email, "Welcome to Our Platform", htmlContent);
-    res.status(200).json({ success: "Email sent successfully" });
-  } catch (error) {
-    res.status(500).json({ error: "Failed to send email" });
-  }
-};
-
