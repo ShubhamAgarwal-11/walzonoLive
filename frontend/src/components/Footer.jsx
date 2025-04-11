@@ -12,11 +12,11 @@ import { motion } from 'framer-motion';
 
 const Footer = () => {
   const socialLinks = [
-    { icon: faFacebook, color: '#1877F2', link: '#' },
-    { icon: faTwitter, color: '#1DA1F2', link: '#' },
-    { icon: faInstagram, color: '#E4405F', link: '#' },
+    // { icon: faTwitter, color: '#1DA1F2', link: '#' },
+    { icon: faInstagram, color: '#E4405F', link: 'https://www.instagram.com/walzono_official' },
     { icon: faLinkedin, color: '#0A66C2', link: '#' },
-    { icon: faYoutube, color: '#FF0000', link: '#' },
+    { icon: faFacebook, color: '#1877F2', link: '#' },
+    // { icon: faYoutube, color: '#FF0000', link: '#' },
   ];
 
   const footerVariants = {
@@ -126,7 +126,7 @@ const Footer = () => {
                 <span className="mr-2">📧</span> walzonowithus@gmail.com
               </p>
               <p className="flex items-center">
-                <span className="mr-2">📞</span> +1 234 567 890
+                <span className="mr-2">📞</span> +91 7878573321
               </p>
             </div>
           </div>

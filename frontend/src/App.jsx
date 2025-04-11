@@ -34,10 +34,6 @@ function App() {
           element : <HeroSection/>
         },
         {
-          path  : "*",
-          element : <NotFoundPage/>
-        },
-        {
           path  : "/services/:category",
           element : <ServicesByTypes/>
         },
@@ -68,6 +64,10 @@ function App() {
         {
           path : "/blog",
           element : <BlogList/>
+        },
+        {
+          path  : "*",
+          element : <NotFoundPage/>
         },
         // {
         //   path : "/testing", 
