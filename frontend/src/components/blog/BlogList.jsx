@@ -4,6 +4,8 @@ import { useState, useEffect } from "react"
 import BlogCard from './BlogCard'
 import BlogPost from "./BlogPost"
 import { motion } from "framer-motion"
+import axios from "axios"
+import { BLOG_API_END_POINT } from "../../utils/constent"
 
 const mockBlogs = [
   {
@@ -71,6 +73,7 @@ const mockBlogs = [
   },
 ];
 
+
 export default function BlogList() {
   const [blogs, setBlogs] = useState([])
   const [selectedBlog, setSelectedBlog] = useState(null)
@@ -78,12 +81,21 @@ export default function BlogList() {
 
   useEffect(() => {
     const fetchBlogs = async () => {
-      setTimeout(() => {
-        setBlogs(mockBlogs)
-        setLoading(false)
-      }, 500)
+      try {
+        const response = await axios.get(`${BLOG_API_END_POINT}/getAllBlogs`, {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        })
+        if(response.data.success){
+          setBlogs(response.data.blogs)
+          setLoading(false)
+        }
+      } catch (error) {
+        console.error("Error fetching blogs:", error);
+        return error;
+      }
     }
-
+    
     fetchBlogs()
   }, [])
 

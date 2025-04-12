@@ -51,10 +51,10 @@ export default function BlogPost({ blog, onBackClick }) {
         <h1 className="text-3xl md:text-4xl font-bold mb-6 text-black">{blog.title}</h1>
 
         <div className="prose dark:prose-invert max-w-none">
-          <p className="text-lg leading-relaxed">{blog.content}</p>
+          <p className="text-lg leading-relaxed mb-10">{blog.content}</p>
 
           {/* In a real app, you would render the full blog content here */}
-          <p className="mt-6">
+          {/* <p className="mt-6">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl vel ultricies lacinia, nisl nisl
             aliquam nisl, eget aliquam nisl nisl sit amet nisl. Sed euismod, nisl vel ultricies lacinia, nisl nisl
             aliquam nisl, eget aliquam nisl nisl sit amet nisl.
@@ -63,7 +63,7 @@ export default function BlogPost({ blog, onBackClick }) {
           <p className="mt-6">
             Sed euismod, nisl vel ultricies lacinia, nisl nisl aliquam nisl, eget aliquam nisl nisl sit amet nisl. Sed
             euismod, nisl vel ultricies lacinia, nisl nisl aliquam nisl, eget aliquam nisl nisl sit amet nisl.
-          </p>
+          </p> */}
         </div>
       </motion.div>
     </motion.div>

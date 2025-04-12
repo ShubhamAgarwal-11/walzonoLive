@@ -39,7 +39,7 @@ export default function BlogCard({ blog, onClick }) {
           <time dateTime={blog.date} className="text-black">{blog.date}</time>
         </div>
         <h3 className="text-xl font-bold mb-3 text-black">{blog.title}</h3>
-        <p className="text-gray-600 text-black mb-4 flex-1">{blog.excerpt}</p>
+        <p className="text-gray-600 text-black mb-4 flex-1">{blog.description}</p>
         <button className="text-black font-medium flex items-center group">
           Read More
           <svg
