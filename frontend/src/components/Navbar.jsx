@@ -156,6 +156,7 @@ import { USER_API_END_POINT } from "../utils/constent"
 import { useDispatch } from "react-redux"
 import { logoutUser } from "../redux/userSlice"
 import { selectCartItems } from "../redux/cartSlice"
+import {CircleUserRound } from 'lucide-react'
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -284,7 +285,12 @@ const Navbar = () => {
                 role="button"
                 className="flex items-center hover:text-gray-300 cursor-pointer transition-colors"
               >
-                <span className="text-sm lg:text-base">{user?.name}</span>
+                <span className="text-sm lg:text-base flex items-center">
+                <CircleUserRound />
+                  <span className="m-2">
+                    {user?.name}
+                  </span>
+                </span>
                 <RiArrowDownSLine className="ml-1" />
               </div>
               <ul

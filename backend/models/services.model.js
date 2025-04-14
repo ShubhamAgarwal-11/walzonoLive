@@ -38,7 +38,7 @@ const serviceSchema = new Schema({
   },
   rating : {
     type : Number,
-    default : 4
+    default : 4.2
   },
   serviceCategory : {
     type: String,

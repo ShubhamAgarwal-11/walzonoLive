@@ -384,3 +384,30 @@ exports.getAllServicesOfSelectedPartner = async (req, res) => {
 }
 
 
+exports.getAllPartners = async (req, res) => {
+    try {
+        const partners = await Partner.find();
+
+        if (partners.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "No partners found"
+            });
+        }
+
+        const top5Partners = partners.slice(0, 5); // Get first 5 from array
+
+        return res.status(200).json({
+            success: true,
+            allPartners: partners,
+            top5Partners: top5Partners
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+            error: error.message
+        });
+    }
+}

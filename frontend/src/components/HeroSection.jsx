@@ -3,7 +3,7 @@ import { FaCut, FaSpa, FaHandHoldingWater, FaSmile, FaWind, FaPaintBrush, FaLeaf
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import { SERVICE_API_END_POINT } from "../utils/constent";
+import { SERVICE_API_END_POINT, PARTNER_API_END_POINT } from "../utils/constent";
 import { useNavigate } from "react-router-dom";
 import { setAllBestServicesForMen , setAllBestServicesForWomen, setTopServicesForMen , setTopServicesForWomen } from "../redux/serviceSlice";
 import Preloader from "./Preload";
@@ -12,6 +12,8 @@ const HomeContent = () => {
   const { user } = useSelector((state) => state.user);
   const [menServices, setMenServices] = useState([]);
   const [womenServices, setWomenServices] = useState([]);
+  const [allPartners , setAllPartners] = useState([]);
+  const [topPartners , setTopPartners] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -47,13 +49,30 @@ const HomeContent = () => {
     }
   };
 
+  const fetchPartners = async()=>{
+    try {
+      const response = await axios.get(`${PARTNER_API_END_POINT}/getAllPartners`, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
+      // console.log("response ", response)
+      if(response.data.success){
+        setAllPartners(response.data.allPartners);
+        setTopPartners(response.data.top5Partners)
+      }
+    } catch (error) {
+      console.error('Error while fetching Partners List:- ', error);
+    }
+  }
+
   useEffect(() => {
     fetchBestServices();
+    fetchPartners();
   }, []);
 
-  const ServiceCard = ({ service, bgColor }) => (
-    <div className={`relative group overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 ${bgColor}`}>
-      <div className="aspect-video relative overflow-hidden">
+  const ServiceCard = ({ service, bgColor, type }) => (
+    <div className={`relative group overflow-hidden cursor-pointer rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 ${bgColor}`} onClick={()=> navigate(`${type}`)} >
+      <div className="aspect-video relative overflow-hidden" >
         <img
           src={service.serviceImage || "/placeholder.svg"}
           alt={service.name}
@@ -189,7 +208,7 @@ const HomeContent = () => {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 {womenServices.map((service) => (
-                  <ServiceCard key={service._id} service={service} bgColor="bg-white shadow-xl" />
+                  <ServiceCard key={service._id} service={service} bgColor="bg-white shadow-xl" type="women" />
                 ))}
               </div>
             </div>
@@ -213,7 +232,7 @@ const HomeContent = () => {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 {menServices.map((service) => (
-                  <ServiceCard key={service._id} service={service} bgColor="bg-gray-800 shadow-xl" />
+                  <ServiceCard key={service._id} service={service} bgColor="bg-gray-800 shadow-xl" type="men" />
                 ))}
               </div>
             </div>
@@ -228,18 +247,18 @@ const HomeContent = () => {
                 <p className="text-gray-600 font-light">Discover premium beauty destinations</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-                {[1, 2, 3, 4, 5].map((item) => (
-                  <div key={item} className="group relative overflow-hidden rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-500">
+                {topPartners.map((item) => (
+                  <div key={item._id} className="group relative overflow-hidden rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-500">
                     <div className="aspect-square relative transform group-hover:scale-105 transition-transform duration-500">
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10"></div>
                       <img
-                        src={`https://source.unsplash.com/random/600x600?luxury-salon-${item}`}
+                        src={item.parlourImage}
                         alt="Salon"
                         className="w-full h-full object-cover absolute inset-0 transform group-hover:scale-110 transition-transform duration-500"
                       />
                       <div className="absolute bottom-6 left-6 text-white z-20">
-                        <h3 className="text-xl font-bold">Élan Salon #{item}</h3>
-                        <p className="text-sm font-light opacity-90">⭐ {4.5 + (item * 0.1).toFixed(1)} ({item * 125}+)</p>
+                        <h3 className="text-xl font-bold">{item.parlourName}</h3>
+                        <p className="text-sm font-light opacity-90">⭐{item.rating}</p>
                       </div>
                       <div className="absolute top-6 right-6 z-20">
                         <button className="bg-white/90 text-black px-4 py-2 rounded-full text-sm font-semibold hover:bg-white transition-all shadow-md">

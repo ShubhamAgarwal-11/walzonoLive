@@ -22,6 +22,7 @@ import PartnerRegistration from './components/partners_component/PartnerRegistra
 import OTPLogin from './components/partners_component/OTPLogin'
 import PaymentOption from './components/PaymentOptions'
 import BlogList from './components/blog/BlogList'
+import Contact from './components/Contact'
 
 function App() {
   const appRouter = createBrowserRouter([
@@ -44,6 +45,10 @@ function App() {
         {
           path : "/booking",
           element : <Booking/>
+        },
+        {
+          path : "/contact",
+          element : <Contact/>
         },
         {
           path : "/temp",

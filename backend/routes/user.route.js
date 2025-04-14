@@ -7,6 +7,7 @@ const userController = require('../controllers/user.controller');
 
 router.post('/user-register',userController.register);
 router.post('/login',userController.login);
+router.post('/contact',userController.contactUs);
 router.get('/logout',userController.logout);
 
 

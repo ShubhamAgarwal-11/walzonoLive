@@ -28,7 +28,10 @@ const partnerSchema = new Schema({
     type: String,
     required: true
   }, 
-
+  rating:{
+    type : Number,
+    default : 4.5
+  },
   OTP: {
     type: String,
     default: null,
