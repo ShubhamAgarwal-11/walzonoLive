@@ -23,6 +23,7 @@ import OTPLogin from './components/partners_component/OTPLogin'
 import PaymentOption from './components/PaymentOptions'
 import BlogList from './components/blog/BlogList'
 import Contact from './components/Contact'
+import AllServicesOfSalons from './components/AllServicesOfSalons'
 
 function App() {
   const appRouter = createBrowserRouter([
@@ -45,6 +46,10 @@ function App() {
         {
           path : "/booking",
           element : <Booking/>
+        },
+        {
+          path : "/salon/:id",
+          element : <AllServicesOfSalons/>
         },
         {
           path : "/contact",

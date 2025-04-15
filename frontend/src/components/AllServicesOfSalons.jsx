@@ -1,6 +1,6 @@
 "use client"
 
-// here service types means hair, makeup etc
+// all services of particular salons etc
 
 import { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
@@ -10,10 +10,9 @@ import { useParams } from "react-router"
 import { useNavigate } from "react-router"
 
 // Import actions from your existing cart slice
-import { addToCart, decreaseQuantity, selectCartItemById } from "../redux/cartSlice"
-import { selectAllBestServicesForMen , selectAllBestServicesForWomen } from "../redux/serviceSlice"
+import { addToCart, decreaseQuantity, selectCartItemById, selectCartItems } from "../redux/cartSlice"
 import axios from "axios"
-import { SERVICE_API_END_POINT } from "../utils/constent"
+import { PARTNER_API_END_POINT } from "../utils/constent"
 
 // Custom UI Components
 const Card = ({ children, className = "", ...props }) => {
@@ -127,18 +126,14 @@ const AlertDescription = ({ children, className = "", ...props }) => {
   )
 }
 
-export default function ServicesByTypes() {
+export default function AllServicesOfSalons() {
   const dispatch = useDispatch()
   const [services, setServices] = useState([])
+  const [parlourName , setParlourName] = useState("")
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const { category } = useParams();
-  // const navigate = useNavigate();
-  
+  const { id } = useParams();
 
-  // console.log("allServicesForMen :->",allServicesForMen)
-
-  // console.log("useParams :->",category)
 
   // Fetch services from API
   useEffect(() => {
@@ -146,11 +141,16 @@ export default function ServicesByTypes() {
       try {
         setLoading(true)
         // Replace with your actual API endpoint
-        const response = await axios.get(`${SERVICE_API_END_POINT}/getAllServicesByCategoryName`, { params: { service: category } })
+        const response = await axios.get(`http://localhost:8000/api/partner/getServicesOfPartner`, { params: { partnerId: id } })
+        console.log(response.data)
         if (!response.data.success) {
           throw new Error(`Error: ${response.status}`)
         }
+        // console.log("response of partner",response)
         setServices(response.data.services)
+        setParlourName(response.data.parlourName)
+       
+        
         setError(null)
       } catch (err) {
         console.error("Failed to fetch services:", err)
@@ -182,8 +182,9 @@ export default function ServicesByTypes() {
           rating: service.rating,
           duration: service.duration
         })
+
       )
-      // console.log("service added to cart" , service.duration)
+      console.log("service added to cart" )
     }
 
     const handleRemoveFromCart = () => {
@@ -318,7 +319,7 @@ export default function ServicesByTypes() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        Our Beauty Services
+        Walcome to <span className="text-[#800080]">{parlourName}</span>
       </motion.h1>
 
       {loading ? (

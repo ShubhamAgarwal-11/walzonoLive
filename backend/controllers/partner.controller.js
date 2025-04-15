@@ -373,7 +373,8 @@ exports.getAllServicesOfSelectedPartner = async (req, res) => {
         return res.status(200).json({
             success: true,
             message: "Services found.",
-            services: services.services
+            services: services.services,
+            parlourName : partner.parlourName
         });
     } catch (error) {
         return res.status(500).json({

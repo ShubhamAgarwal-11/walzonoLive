@@ -141,7 +141,7 @@ const HomeContent = () => {
                 <h1 className="text-5xl md:text-7xl font-bold leading-tight animate-fadeInUp text-black bg-clip-text">
                   Premium Home Services
                 </h1>
-                <p className="text-xl md:text-2xl text-black font-light">
+                <p className="text-xl md:text-2xl text-black ">
                   Experience luxury delivered to your doorstep
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 relative">
@@ -248,7 +248,7 @@ const HomeContent = () => {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                 {topPartners.map((item) => (
-                  <div key={item._id} className="group relative overflow-hidden rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-500">
+                  <div key={item._id} onClick={() => navigate(`/salon/${item._id}`)} className="group relative overflow-hidden cursor-pointer rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-500">
                     <div className="aspect-square relative transform group-hover:scale-105 transition-transform duration-500">
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10"></div>
                       <img
