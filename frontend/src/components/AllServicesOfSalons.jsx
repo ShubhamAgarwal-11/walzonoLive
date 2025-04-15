@@ -141,7 +141,7 @@ export default function AllServicesOfSalons() {
       try {
         setLoading(true)
         // Replace with your actual API endpoint
-        const response = await axios.get(`http://localhost:8000/api/partner/getServicesOfPartner`, { params: { partnerId: id } })
+        const response = await axios.get(`${PARTNER_API_END_POINT}/getServicesOfPartner`, { params: { partnerId: id } })
         console.log(response.data)
         if (!response.data.success) {
           throw new Error(`Error: ${response.status}`)
