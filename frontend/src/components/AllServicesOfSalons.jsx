@@ -181,8 +181,9 @@ export default function AllServicesOfSalons() {
           description: service.description,
           rating: service.rating,
           duration: service.duration,
-          partnerImage : service.partnerId.parlourImage,
-          partnerId : service.partnerId._id
+          serviceType : service.serviceType,
+          partnerId : service.partnerId._id,
+          parlourImage : service.partnerId.parlourImage
         })
 
       )

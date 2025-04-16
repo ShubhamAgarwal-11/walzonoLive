@@ -77,8 +77,8 @@ exports.getBestServices = async (req, res) => {
             success: true,
             menServices,
             womenServices,
-            menServicesTop4,
-            womenServicesTop4
+            menServicesTop5 : menServicesTop4,
+            womenServicesTop5 : womenServicesTop4
         });
 
     } catch (error) {

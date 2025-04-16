@@ -148,7 +148,6 @@ export default function ServicesByTypes() {
         if (!response.data.success) {
           throw new Error(`Error: ${response.status}`)
         }
-        // console.log(response)
         if(gender === "women"){
           setServices(response.data.womenServices)
         } 
@@ -186,7 +185,8 @@ export default function ServicesByTypes() {
           rating: service.rating,
           duration: service.duration,
           serviceType : service.serviceType,
-          partnerId : service.partnerId,
+          partnerId : service.partnerId._id,
+          parlourImage : service.partnerId.parlourImage
         })
         
       )

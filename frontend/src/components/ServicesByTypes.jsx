@@ -182,8 +182,9 @@ export default function ServicesByTypes() {
           description: service.description,
           rating: service.rating,
           duration: service.duration,
-          partnerImage : service.partnerId.parlourImage,
-          partnerId : service.partnerId._id
+          serviceType : service.serviceType,
+          partnerId : service.partnerId._id,
+          parlourImage : service.partnerId.parlourImage
         })
       )
       // console.log("service added to cart" , service.duration)

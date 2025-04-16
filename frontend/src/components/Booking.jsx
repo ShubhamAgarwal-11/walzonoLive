@@ -88,13 +88,46 @@ const Booking = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-
-    // Submit booking logic
-    console.log({
-      personalInfo: formData,
-      bookings: serviceBookings
-    });
+  
+    // Find the first booked service to use its partner info
+    const bookedServices = services.filter(service =>
+      serviceBookings[service.serviceName]?.bookingType
+    );
+  
+    if (bookedServices.length === 0) {
+      setError('No valid services selected.');
+      return;
+    }
+  
+    const bookingData = {
+      userInfo: {
+        name: formData.name,
+        phone: formData.phone,
+        address: formData.address
+      },
+      bookingType: serviceBookings[bookedServices[0].serviceName].bookingType,
+      bookingDate: serviceBookings[bookedServices[0].serviceName].date,
+      bookingTime: serviceBookings[bookedServices[0].serviceName].time,
+      services: bookedServices.map(service => ({
+        serviceId: service.serviceId,
+        serviceName: service.serviceName,
+        quantity: service.quantity,
+        price: service.price,
+        serviceType: service.serviceType,
+        serviceImage: service.image
+      })),
+      partnerInfo: {
+        partnerId: bookedServices[0].partnerId,
+        name: bookedServices[0].parlourName,
+        image: bookedServices[0].parlourImage
+      }
+    };
+  
+    console.log("Booking payload:", bookingData);
+  
+    // You can now send this payload to your API endpoint
   };
+  
 
   const getSelectedServicesCount = () => {
     return Object.values(serviceBookings).filter(booking => booking.bookingType).length;

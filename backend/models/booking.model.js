@@ -1,41 +1,54 @@
 const mongoose = require('mongoose');
 
+const serviceSchema = new mongoose.Schema({
+    serviceName: { type: String, required: true },
+    quantity: { type: Number, default: 1, min: 1 },
+    price: { type: Number, required: true, min: 0 },
+    serviceImage: { type: String },
+    serviceType: { type: String, required: true },
+    serviceId: { type: mongoose.Schema.Types.ObjectId, ref: 'Service', required: true }
+}, { _id: false });
+
 const bookingSchema = new mongoose.Schema({
     userInfo: {
         name: { type: String, required: true },
         phone: { type: String, required: true },
-        address: { type: String }
+        address: { type: String, required: true }
     },
 
-    // Booking Type
     bookingType: {
         type: String,
         enum: ["Today's Booking", 'Home Appointment', 'Salon Appointment'],
-        default: 'Today Booking',
+        default: "Today's Booking",
         required: true
     },
 
-    // Conditional Date & Time
-    bookingDateTime: {
+    bookingDate: {
         type: Date,
         required: function () {
             return this.bookingType !== "Today's Booking";
         }
     },
 
-    // Array of Services
-    services: [{
-        serviceName: { type: String, required: true },
-        quantity: { type: Number, default: 1, min: 1 },
-        serviceType: {
-            type: String,
-            // enum: ['Haircut', 'Massage', 'Facial', 'Other'],
-            required: true
-        },
-        price: { type: Number, required: true, min: 0 }
-    }],
+    bookingTime: {
+        type: String,
+        required: function () {
+            return this.bookingType !== "Today's Booking";
+        }
+    },
 
-    // Partner Info
+    bookingMode: {
+        type: String,
+        enum: ['COD', 'Online'],
+        required: true
+    },
+
+    services: {
+        type: [serviceSchema],
+        required: true,
+        validate: v => Array.isArray(v) && v.length > 0
+    },
+
     partnerInfo: {
         partnerId: {
             type: mongoose.Schema.Types.ObjectId,
@@ -43,38 +56,26 @@ const bookingSchema = new mongoose.Schema({
             required: true
         },
         name: { type: String, required: true },
-        image: { type: String } // Could be a URL or a file path
+        image: { type: String }
     },
 
-    // Booking Status
     bookingStatus: {
         type: String,
         enum: ['Pending', 'Confirmed', 'Completed', 'Cancelled'],
         default: 'Pending'
     },
 
-    // Total Price
     totalAmount: {
         type: Number,
         required: true,
         min: 0
     },
 
-    // Optional Soft Delete
     isDeleted: {
         type: Boolean,
         default: false
     }
 
 }, { timestamps: true });
-
-// Validation Logic (if needed, can be refined further)
-bookingSchema.pre('save', function(next) {
-    if (this.bookingType !== 'Today Booking' && !this.bookingDateTime) {
-        return next(new Error('Date and Time are required for Home or Salon Appointments.'));
-    }
-
-    next();
-});
 
 module.exports = mongoose.model('Booking', bookingSchema);
