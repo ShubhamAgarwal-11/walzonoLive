@@ -151,6 +151,7 @@ export default function ServicesByTypes() {
           throw new Error(`Error: ${response.status}`)
         }
         setServices(response.data.services)
+        // console.log("response.data.services :->",response.data)
         setError(null)
       } catch (err) {
         console.error("Failed to fetch services:", err)
@@ -180,7 +181,9 @@ export default function ServicesByTypes() {
           image: service.serviceImage,
           description: service.description,
           rating: service.rating,
-          duration: service.duration
+          duration: service.duration,
+          partnerImage : service.partnerId.parlourImage,
+          partnerId : service.partnerId._id
         })
       )
       // console.log("service added to cart" , service.duration)

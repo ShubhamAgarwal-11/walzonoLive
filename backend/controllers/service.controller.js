@@ -51,33 +51,42 @@ const Service = require('../models/services.model');
 //     }
 // };
 
-
-exports.getBestServices = async(req,res)=>{
+exports.getBestServices = async (req, res) => {
     try {
-        
-        const menServices = await Service.find({serviceCategory : "Men's"}).sort({bookingCount : -1})
-        const womenServices = await Service.find({serviceCategory : "Women's"}).sort({bookingCount : -1})
-        const bothServices = await Service.find({serviceCategory : "Both"}).sort({bookingCount : -1})
-        menServices.push(...bothServices)
-        womenServices.push(...bothServices)
+        const menServices = await Service.find({ serviceCategory: "Men's" })
+            .sort({ bookingCount: -1 })
+            .populate('partnerId');
 
+        const womenServices = await Service.find({ serviceCategory: "Women's" })
+            .sort({ bookingCount: -1 })
+            .populate('partnerId');
+
+        const bothServices = await Service.find({ serviceCategory: "Both" })
+            .sort({ bookingCount: -1 })
+            .populate('partnerId');
+
+        // Merge 'Both' category services into men and women lists
+        menServices.push(...bothServices);
+        womenServices.push(...bothServices);
+
+        // Slice to get top 4
         const menServicesTop4 = menServices.slice(0, 4);
         const womenServicesTop4 = womenServices.slice(0, 4);
 
         return res.status(200).json({
-            success : true,
-            menServices : menServices,
-            womenServices : womenServices,
-            menServicesTop5 : menServicesTop4,
-            womenServicesTop5 : womenServicesTop4
-        })
+            success: true,
+            menServices,
+            womenServices,
+            menServicesTop4,
+            womenServicesTop4
+        });
 
     } catch (error) {
         return res.status(500).json({
-            success : false,
-            message : "Error while fetching best services.",
-            error : error.message
-        })
+            success: false,
+            message: "Error while fetching best services.",
+            error: error.message
+        });
     }
 }
 

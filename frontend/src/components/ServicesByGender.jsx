@@ -136,7 +136,7 @@ export default function ServicesByTypes() {
   // const navigate = useNavigate();
   // console.log("All items in cart in gernder file",allItems)
 
-  console.log(gender)
+  // console.log(gender)
 
   // Fetch services from API
   useEffect(() => {
@@ -145,10 +145,10 @@ export default function ServicesByTypes() {
         setLoading(true)
         // Replace with your actual API endpoint
         const response = await axios.get(`${SERVICE_API_END_POINT}/getBestServices`, { params: { service: gender } })
-        console.log(response.data)
         if (!response.data.success) {
           throw new Error(`Error: ${response.status}`)
         }
+        // console.log(response)
         if(gender === "women"){
           setServices(response.data.womenServices)
         } 
@@ -174,7 +174,6 @@ export default function ServicesByTypes() {
  const ServiceCard = ({ service }) => {
     const cartItem = useSelector((state) => selectCartItemById(state, service._id))
     const [isModalOpen, setIsModalOpen] = useState(false)
-
     const handleAddToCart = () => {
       dispatch(
         addToCart({
@@ -185,10 +184,13 @@ export default function ServicesByTypes() {
           image: service.serviceImage,
           description: service.description,
           rating: service.rating,
-          duration: service.duration
+          duration: service.duration,
+          serviceType : service.serviceType,
+          partnerId : service.partnerId,
         })
-
+        
       )
+      console.log("service added to cart" , service)
       console.log("service added to cart" )
     }
 

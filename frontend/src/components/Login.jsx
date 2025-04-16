@@ -49,7 +49,7 @@ function Login() {
   return (
     <div className="flex justify-center items-center min-h-screen bg-white">
       <div className="bg-gray-300 rounded-lg shadow-md p-8 w-96">
-        <h2 className="text-2xl font-bold mb-4 text-center text-black">Welcome to Beauty At Home</h2>
+        <h2 className="text-2xl font-bold mb-4 text-center text-black">Welcome to walzono</h2>
         <form onSubmit={submitHandler}>
           <div className="mb-4">
             <label htmlFor="email" className="block text-black font-bold mb-2">

@@ -34,6 +34,7 @@ const Booking = () => {
       const response = await axios.get(`${CART_API_END_POINT}/getCart`, { params: { userId: user._id } });
       if (response.data.success) {
         setServices(response.data.cart.cartItems);
+        console.log("cart response :",response.data.cart.cartItems);
       }
     } catch (error) {
       console.error("Error fetching cart:", error);
