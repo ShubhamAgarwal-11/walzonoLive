@@ -3,6 +3,7 @@ import userSlice from './userSlice'
 import cartSlice from "./cartSlice";
 import partnerSlice from "./partnerSlice";
 import serviceSlice from "./serviceSlice";
+import bookingSlice from "./bookingSlice";
 
 import {
     persistStore,
@@ -26,7 +27,8 @@ const rootReducer = combineReducers({
     user : userSlice,
     cart : cartSlice,
     partner : partnerSlice,
-    service : serviceSlice
+    service : serviceSlice,
+    booking : bookingSlice
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

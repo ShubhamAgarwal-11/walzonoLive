@@ -9,7 +9,9 @@ import {
   removeFromCart, 
   updateQuantity, 
   setCartItems,
-  clearCart 
+  clearCart, 
+  setCartPrice,
+  setCartDiscount
 } from "../../redux/cartSlice"
 import { ShoppingBag, ArrowLeft, Trash2, Plus, Minus } from "lucide-react"
 import axios from "axios"
@@ -61,9 +63,11 @@ const CartPage = () => {
   }, [user, dispatch, isInitialLoad, cartItems])
 
   const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0)
-  const tax = subtotal * 0.1
+  const tax = subtotal * 0.1   // now we give 10% discount 5% of total subtotal amount. 
   const platformFee = 7
-  const total = subtotal + tax + platformFee
+  const discount = subtotal * 0.05;
+  const totalWithoutDiscount = subtotal + tax + platformFee;
+  const total = subtotal + tax + platformFee - discount
 
   const handleQuantityUpdate = async (id, newQuantity) => {
     const originalQuantity = cartItems.find(item => item.id === id)?.quantity
@@ -135,6 +139,8 @@ const CartPage = () => {
       )
       setIsInitialLoad(true)
       await getCart()
+      dispatch(setCartPrice(totalWithoutDiscount))
+      dispatch(setCartDiscount(discount))
       navigate("/booking")
     } catch (error) {
       toast.error("Checkout failed. Please try again.")
@@ -259,7 +265,7 @@ const CartPage = () => {
               <span>₹{subtotal?.toFixed(2)}</span>
             </div>
             <div className="summary-row">
-              <span>Tax (10%)</span>
+              <span>Incl changes</span>
               <span>₹{tax?.toFixed(2)}</span>
             </div>
             <div className="summary-row">
@@ -269,6 +275,15 @@ const CartPage = () => {
             <div className="summary-row">
               <span>Platform Fee</span>
               <span>₹{platformFee?.toFixed(2)}</span>
+            </div>
+            <hr className="bold border border-gray-400 my-2" />
+            <div className="summary-row">
+              <span>Grand Total</span>
+              <span>₹{totalWithoutDiscount?.toFixed(2)}</span>
+            </div>
+            <div className="summary-row">
+              <span className="text-green-700 font-bold">WZ Exclusive Discount</span>
+              <span className="text-green-700 font-bold">₹{discount?.toFixed(2)}</span>
             </div>
             <div className="summary-divider"></div>
             <div className="summary-row total">

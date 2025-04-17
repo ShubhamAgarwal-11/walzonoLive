@@ -44,7 +44,7 @@ function ServiceManagement() {
   const fetchAllServices = async () => {
     try {
       const partnerId = partner?._id;
-      const response = await axios.get(`${PARTNER_API_END_POINT}/partner/getServices`, {
+      const response = await axios.get(`${PARTNER_API_END_POINT}/getServicesOfPartner`, {
         params: { partnerId },
         headers: {
           "Content-Type": "application/json",

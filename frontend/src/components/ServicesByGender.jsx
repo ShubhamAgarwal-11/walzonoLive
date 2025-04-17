@@ -190,8 +190,8 @@ export default function ServicesByTypes() {
         })
         
       )
-      console.log("service added to cart" , service)
-      console.log("service added to cart" )
+      // console.log("service added to cart" , service)
+      // console.log("service added to cart" )
     }
 
     const handleRemoveFromCart = () => {

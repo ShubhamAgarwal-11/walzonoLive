@@ -2,7 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Calendar, Clock, MapPin, ChevronDown, ArrowLeft, Star } from 'lucide-react';
 import axios from 'axios';
 import { CART_API_END_POINT } from '../utils/constent';
-import { useSelector } from 'react-redux';
+import { useSelector , useDispatch} from 'react-redux';
+import {setBookingInfo} from '../redux/bookingSlice';
+import { useNavigate } from 'react-router-dom';
+import { getDiscount, getPrice } from '../redux/cartSlice';
 
 const Booking = () => {
   const [formData, setFormData] = useState({
@@ -15,6 +18,10 @@ const Booking = () => {
   const [services, setServices] = useState([]);
   const [error, setError] = useState('');
   const { user } = useSelector((store) => store.user);
+  const totalPrice = useSelector(getPrice);
+  const discount = useSelector(getDiscount)
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const bookingTypes = ["Today's Booking", "Home Appointment", "Salon Appointment"];
   const timeSlots = ["9:00 AM", "11:00 AM", "1:00 PM", "3:00 PM", "5:00 PM", "7:00 PM"];
@@ -62,9 +69,9 @@ const Booking = () => {
       return false;
     }
 
-    // At least one service selected validation
-    if (getSelectedServicesCount() === 0) {
-      setError('Please select at least one service.');
+    // All services must be selected validation
+    if (services.length > 0 && getSelectedServicesCount() !== services.length) {
+      setError('Please select a booking type for all services.');
       return false;
     }
 
@@ -89,7 +96,6 @@ const Booking = () => {
     e.preventDefault();
     if (!validateForm()) return;
   
-    // Find the first booked service to use its partner info
     const bookedServices = services.filter(service =>
       serviceBookings[service.serviceName]?.bookingType
     );
@@ -105,30 +111,40 @@ const Booking = () => {
         phone: formData.phone,
         address: formData.address
       },
-      bookingType: serviceBookings[bookedServices[0].serviceName].bookingType,
-      bookingDate: serviceBookings[bookedServices[0].serviceName].date,
-      bookingTime: serviceBookings[bookedServices[0].serviceName].time,
-      services: bookedServices.map(service => ({
-        serviceId: service.serviceId,
-        serviceName: service.serviceName,
-        quantity: service.quantity,
-        price: service.price,
-        serviceType: service.serviceType,
-        serviceImage: service.image
-      })),
-      partnerInfo: {
-        partnerId: bookedServices[0].partnerId,
-        name: bookedServices[0].parlourName,
-        image: bookedServices[0].parlourImage
-      }
+      services: bookedServices.map(service => {
+        const bookingDetails = serviceBookings[service.serviceName];
+        const serviceObj = {
+          serviceId: service.serviceId,
+          serviceName: service.serviceName,
+          quantity: service.quantity,
+          price: service.price,
+          serviceType: service.serviceType,
+          serviceImage: service.image,
+          bookingType: bookingDetails.bookingType,
+          // Add partner info directly to each service
+          partnerInfo: {
+            partnerId: service.partnerId,
+            name: service.parlourName,
+            image: service.parlourImage
+          }
+        };
+        if (bookingDetails.bookingType === "Home Appointment" || bookingDetails.bookingType === "Salon Appointment") {
+          serviceObj.bookingDate = bookingDetails.date;
+          serviceObj.bookingTime = bookingDetails.time;
+        }
+        return serviceObj;
+      }),
+      totalAmount: totalPrice - discount,
+      discount: discount
     };
   
     console.log("Booking payload:", bookingData);
   
-    // You can now send this payload to your API endpoint
+    dispatch(setBookingInfo(bookingData));
+    navigate('/payment-options');
   };
-  
 
+  
   const getSelectedServicesCount = () => {
     return Object.values(serviceBookings).filter(booking => booking.bookingType).length;
   };
@@ -151,7 +167,7 @@ const Booking = () => {
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
             {/* Personal Details Section */}
-            <div className="bg-white rounded-xl p-6 shadow-sm">
+            <div className="bg-white rounded-xl p-6 shadow-lg">
               <div className="flex items-center gap-2 mb-6">
                 <span className="bg-black text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">1</span>
                 <h2 className="text-xl font-semibold">Personal Info</h2>
@@ -201,7 +217,7 @@ const Booking = () => {
             </div>
 
             {/* Services Section */}
-            <div className="bg-white rounded-xl p-6 shadow-sm">
+            <div className="bg-white rounded-xl p-6 shadow-lg">
               <div className="flex items-center gap-2 mb-6">
                 <span className="bg-black text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">2</span>
                 <h2 className="text-xl font-semibold">Select Service & Booking Type</h2>
@@ -323,7 +339,12 @@ const Booking = () => {
             <button
               onClick={handleSubmit}
               className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
-              disabled={!formData.name || !formData.address || !formData.phone || getSelectedServicesCount() === 0}
+              disabled={
+                !formData.name || 
+                !formData.address || 
+                !formData.phone || 
+                getSelectedServicesCount() !== services.length
+              }
             >
               Confirm Booking
             </button>
@@ -331,7 +352,7 @@ const Booking = () => {
 
           {/* Booking Summary */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl p-6 shadow-sm sticky top-6">
+            <div className="bg-white rounded-xl p-6 shadow-lg sticky top-6">
               <h3 className="font-semibold mb-4">Booking Summary</h3>
               <div className="space-y-4">
                 {services.map((service) => {
@@ -385,21 +406,15 @@ const Booking = () => {
                   <div className="border-t pt-4">
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-gray-600">Total Price</span>
-                      <span className="font-semibold">
-                        ₹{services.reduce((total, service) => (
-                          serviceBookings[service.serviceName]?.bookingType ? total + calculateTotalPrice(service) : total
-                        ), 0)}
-                      </span>
+                      <span className='font-semibold'>₹{totalPrice.toFixed(2)}</span>
                     </div>
-                    <div className="flex justify-between items-center mb-2 text-green-600">
-                      <span>Discount</span>
-                      <span>-₹742</span>
+                    <div className="flex justify-between items-center mb-2 text-green-700">
+                      <span>WZ Exclusive Discount</span>
+                      <span>₹{discount.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between items-center font-semibold text-lg">
                       <span>Final Total</span>
-                      <span>₹{services.reduce((total, service) => (
-                        serviceBookings[service.serviceName]?.bookingType ? total + calculateTotalPrice(service) : total
-                      ), 0) - 742}</span>
+                      <span>₹{(totalPrice.toFixed(2) - discount.toFixed(2)).toFixed(2)}</span>
                     </div>
                     <p className="text-xs text-gray-500 mt-1">Inclusive of all taxes</p>
                   </div>

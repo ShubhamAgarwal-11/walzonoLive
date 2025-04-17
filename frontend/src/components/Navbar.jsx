@@ -154,8 +154,8 @@ const Navbar = () => {
                 className="dropdown-content menu p-2 shadow bg-black text-white z-10 rounded-lg w-52 mt-4 border border-gray-700"
               >
                 <li>
-                  <Link to="/profile" className="text-white hover:bg-gray-700 transition-colors">
-                    Profile
+                  <Link to="/orders" className="text-white hover:bg-gray-700 transition-colors">
+                    Your orders
                   </Link>
                 </li>
                 <li>
@@ -248,11 +248,11 @@ const Navbar = () => {
             <>
               <div className="pt-2 font-medium border-t border-gray-700">{user?.name}</div>
               <Link
-                to="/profile"
+                to="/orders"
                 className="py-2 hover:text-gray-300 transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Profile
+                Your orders
               </Link>
               <button
                 onClick={() => {
