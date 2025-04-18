@@ -4,28 +4,15 @@ import toast from "react-hot-toast";
 import { PARTNER_API_END_POINT } from "../../utils/constent";
 import { useSelector } from "react-redux";
 
-// Define service types
 const SERVICE_TYPES = [
-  "Hair",
-  "Makeup",
-  "Spa",
-  "Nails",
-  "Facial",
-  "Massage",
-  "Skincare",
-  "Waxing",
-  "Other"
+  "Hair", "Makeup", "Spa", "Nails", 
+  "Facial", "Massage", "Skincare", "Waxing", "Other"
 ];
 
-// Define service categories
-const SERVICE_CATEGORIES = [
-  "Men's",
-  "Women's",
-  "Both"
-];
+const SERVICE_CATEGORIES = ["Men's", "Women's", "Both"];
 
 function ServiceManagement() {
-  const [services, setServices] = useState("");
+  const [services, setServices] = useState([]);
   const [activeTab, setActiveTab] = useState("all-services");
   const partner = useSelector((store) => store.partner.partnerInfo);
   const [formData, setFormData] = useState({
@@ -43,101 +30,90 @@ function ServiceManagement() {
 
   const fetchAllServices = async () => {
     try {
-      const partnerId = partner?._id;
       const response = await axios.get(`${PARTNER_API_END_POINT}/getServicesOfPartner`, {
-        params: { partnerId },
-        headers: {
-          "Content-Type": "application/json",
-        },
+        params: { partnerId: partner?._id },
+        headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
-      if (response.data.success) {
-        setServices(response.data.services);
-      } else {
-        return toast.error(response.data.message);
-      }
+      if (response.data.success) setServices(response.data.services);
     } catch (error) {
-      console.log(error);
-      return toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Error fetching services");
     }
   };
 
-  useEffect(() => {
-    fetchAllServices();
-  }, []);
+  useEffect(() => { fetchAllServices(); }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
-    });
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value
+    }));
   };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setFormData((prev) => ({
-        ...prev,
-        serviceImage: file,
-      }));
+      setFormData(prev => ({ ...prev, serviceImage: file }));
       setImagePreview(URL.createObjectURL(file));
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      const response = await axios.post(`${PARTNER_API_END_POINT}/partner/addServices`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        withCredentials: true,
+      const formPayload = new FormData();
+      Object.entries(formData).forEach(([key, value]) => {
+        formPayload.append(key, value);
       });
+
+      const response = await axios.post(
+        `${PARTNER_API_END_POINT}/partner/addServices`,
+        formPayload,
+        { headers: { "Content-Type": "multipart/form-data" }, withCredentials: true }
+      );
+
       if (response.data.success) {
+        toast.success("Service added successfully");
         fetchAllServices();
         setFormData({
-          name: "",
-          description: "",
-          price: "",
-          image: "",
-          partnerId: partner?._id,
-          availableAtHome: false,
-          serviceType: "",
-          duration: "",
-          serviceCategory: "",
+          name: "", description: "", price: "", serviceImage: "",
+          partnerId: partner?._id, availableAtHome: false,
+          serviceType: "", duration: "", serviceCategory: ""
         });
         setImagePreview(null);
-        return toast.success(response.data.message);
-      } else {
-        return toast.error(response.data.message);
       }
     } catch (error) {
-      console.log(error);
-      return toast.error(error.response?.data?.message);
+      toast.error(error.response?.data?.message || "Error adding service");
     }
   };
 
   return (
-    <div className="container mx-auto py-8 px-4 bg-white text-black">
-      <h1 className="text-3xl font-bold mb-8 text-center">Service Management</h1>
+    <div className="container mx-auto p-4 sm:p-6">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center text-gray-800">
+        Service Management
+      </h1>
 
       <div className="w-full">
-        <div className="grid w-full grid-cols-2 mb-8 border rounded-lg overflow-hidden">
+        {/* Tabs */}
+        <div className="grid grid-cols-2 mb-6 rounded-lg overflow-hidden border">
           <button
-            className={`py-2 px-4 text-center font-medium transition-colors ${
-              activeTab === "all-services" ? "bg-black text-white" : "bg-white text-black hover:bg-gray-100"
-            }`}
             onClick={() => setActiveTab("all-services")}
+            className={`p-3 text-sm sm:text-base font-medium transition-colors ${
+              activeTab === "all-services" 
+                ? "bg-black text-white" 
+                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+            }`}
           >
             All Services
           </button>
           <button
-            className={`py-2 px-4 text-center font-medium transition-colors ${
-              activeTab === "add-service" ? "bg-black text-white" : "bg-white text-black hover:bg-gray-100"
-            }`}
             onClick={() => setActiveTab("add-service")}
+            className={`p-3 text-sm sm:text-base font-medium transition-colors ${
+              activeTab === "add-service" 
+                ? "bg-black text-white" 
+                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+            }`}
           >
             Add New Service
           </button>
@@ -146,53 +122,60 @@ function ServiceManagement() {
         {activeTab === "all-services" && (
           <div className="space-y-4">
             {services.length === 0 ? (
-              <div className="text-center py-12">
-                <h3 className="text-xl font-medium text-gray-600">No services found</h3>
-                <p className="mt-2">Add your first service to get started.</p>
+              <div className="text-center py-8">
+                <h3 className="text-lg sm:text-xl font-medium text-gray-600">
+                  No services found
+                </h3>
+                <p className="mt-2 text-gray-500">
+                  Add your first service to get started
+                </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {services.map((service) => (
                   <div
-                    key={service.id}
-                    className="bg-white rounded-lg shadow-md overflow-hidden transition-all hover:shadow-lg"
+                    key={service._id}
+                    className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow"
                   >
                     <div className="aspect-video relative overflow-hidden">
                       <img
                         src={service.serviceImage || "/placeholder.svg"}
                         alt={service.name}
-                        className="object-cover w-full h-full transition-transform hover:scale-105"
+                        className="w-full h-full object-cover"
                       />
                       {service.serviceType && (
-                        <span className="absolute top-2 right-2 px-2 py-1 bg-black/75 text-white text-xs rounded-full">
+                        <span className="absolute top-2 right-2 px-3 py-1 bg-black/80 text-white text-xs sm:text-sm rounded-full">
                           {service.serviceType}
                         </span>
                       )}
                     </div>
-                    <div className="p-4">
-                      <div className="flex justify-between items-start pb-2">
-                        <h3 className="text-xl font-bold">{service.name}</h3>
-                        <span className="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-sm font-semibold">
-                          ${service.price}
+                    <div className="p-4 sm:p-6">
+                      <div className="flex justify-between items-start pb-3">
+                        <h3 className="text-lg sm:text-xl font-semibold">
+                          {service.name}
+                        </h3>
+                        <span className="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-sm">
+                          ₹{service.price}
                         </span>
                       </div>
-                      <p className="text-gray-600 line-clamp-3">{service.description}</p>
-                      <div className="mt-2 space-y-1">
-                        <div className="flex items-center text-sm text-gray-600">
-                          <span className="font-medium mr-2">Duration:</span>
-                          {service.duration} minutes
+                      <p className="text-gray-600 text-sm line-clamp-3 mb-4">
+                        {service.description}
+                      </p>
+                      <div className="space-y-2 text-sm text-gray-600">
+                        <div>
+                          <span className="font-medium">Duration:</span>{" "}
+                          {service.duration} mins
                         </div>
-                        <div className="flex items-center text-sm text-gray-600">
-                          <span className="font-medium mr-2">Category:</span>
+                        <div>
+                          <span className="font-medium">Category:</span>{" "}
                           {service.serviceCategory}
                         </div>
                       </div>
                       {service.availableAtHome && (
-                        <div className="mt-2 flex items-center text-green-600">
+                        <div className="mt-3 flex items-center text-green-600 text-sm">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             className="h-4 w-4 mr-1"
-                            fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
                           >
@@ -203,14 +186,14 @@ function ServiceManagement() {
                               d="M3 12l2-2m0 0l7-7 7 7m-7-7v14"
                             />
                           </svg>
-                          <span className="text-xs font-medium">Available at home</span>
+                          Available at home
                         </div>
                       )}
                       <div className="flex justify-end gap-2 mt-4">
-                        <button className="px-3 py-1 border border-gray-300 rounded-full text-sm hover:bg-gray-100 transition-colors">
+                        <button className="px-3 py-1.5 text-sm border border-gray-300 rounded-full hover:bg-gray-50">
                           Edit
                         </button>
-                        <button className="px-3 py-1 bg-red-50 text-red-600 border border-red-200 rounded-full text-sm hover:bg-red-100 transition-colors">
+                        <button className="px-3 py-1.5 text-sm bg-red-50 text-red-600 border border-red-200 rounded-full hover:bg-red-100">
                           Delete
                         </button>
                       </div>
@@ -223,30 +206,33 @@ function ServiceManagement() {
         )}
 
         {activeTab === "add-service" && (
-          <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md">
-            <div className="p-6 border-b">
-              <h2 className="text-2xl font-bold">Add New Service</h2>
+          <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-md">
+            <div className="p-4 sm:p-6 border-b">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
+                Add New Service
+              </h2>
             </div>
-            <form onSubmit={handleSubmit} className="p-6">
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+            <form onSubmit={handleSubmit} className="p-4 sm:p-6">
+              <div className="space-y-4 sm:space-y-5">
+                {/* Service Name */}
+                <div>
+                  <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">
                     Service Name
                   </label>
                   <input
                     id="name"
                     name="name"
                     type="text"
-                    placeholder="Enter service name"
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-3 py-2 border bg-white border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <label htmlFor="serviceType" className="block text-sm font-medium text-gray-700">
+                {/* Service Type */}
+                <div>
+                  <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">
                     Service Type
                   </label>
                   <select
@@ -255,19 +241,18 @@ function ServiceManagement() {
                     value={formData.serviceType}
                     onChange={handleChange}
                     required
-                    className="w-full px-3 py-2 border bg-white border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
                   >
-                    <option value="">Select a service type</option>
-                    {SERVICE_TYPES.map((type) => (
-                      <option key={type} value={type}>
-                        {type}
-                      </option>
+                    <option value="">Select service type</option>
+                    {SERVICE_TYPES.map(type => (
+                      <option key={type} value={type}>{type}</option>
                     ))}
                   </select>
                 </div>
 
-                <div className="space-y-2">
-                  <label htmlFor="category" className="block text-sm font-medium text-gray-700">
+                {/* Service Category */}
+                <div>
+                  <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">
                     Service Category
                   </label>
                   <select
@@ -276,118 +261,120 @@ function ServiceManagement() {
                     value={formData.serviceCategory}
                     onChange={handleChange}
                     required
-                    className="w-full px-3 py-2 border bg-white border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
                   >
-                    <option value="">Select a category</option>
-                    {SERVICE_CATEGORIES.map((category) => (
-                      <option key={category} value={category}>
-                        {category}
-                      </option>
+                    <option value="">Select category</option>
+                    {SERVICE_CATEGORIES.map(cat => (
+                      <option key={cat} value={cat}>{cat}</option>
                     ))}
                   </select>
                 </div>
 
-                <div className="space-y-2">
-                  <label htmlFor="duration" className="block text-sm font-medium text-gray-700">
+                {/* Duration */}
+                <div>
+                  <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">
                     Duration (minutes)
                   </label>
                   <input
                     id="duration"
                     name="duration"
-                    type="text"
-                    placeholder="Enter service duration"
-                    min="1"
+                    type="number"
                     value={formData.duration}
                     onChange={handleChange}
                     required
-                    className="w-full px-3 py-2 border bg-white border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+                {/* Description */}
+                <div>
+                  <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">
                     Description
                   </label>
                   <textarea
                     id="description"
                     name="description"
-                    placeholder="Describe your service"
-                    rows={4}
                     value={formData.description}
                     onChange={handleChange}
+                    rows="4"
                     required
-                    className="w-full px-3 py-2 border border-gray-400 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <label htmlFor="price" className="block text-sm font-medium text-gray-700">
-                    Price ($)
+                {/* Price */}
+                <div>
+                  <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">
+                    Price (₹)
                   </label>
                   <input
                     id="price"
                     name="price"
                     type="number"
-                    placeholder="0.00"
-                    min="0"
                     step="0.01"
                     value={formData.price}
                     onChange={handleChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-400 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <div className="flex items-center">
-                    <input
-                      id="availableAtHome"
-                      name="availableAtHome"
-                      type="checkbox"
-                      checked={formData.availableAtHome}
-                      onChange={handleChange}
-                      className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                    />
-                    <label htmlFor="availableAtHome" className="ml-2 block text-sm font-medium text-gray-700">
-                      Available at customer's home
-                    </label>
-                  </div>
-                  <p className="text-xs text-gray-500">
-                    Check this if you can provide this service at the customer's location
-                  </p>
+                {/* Available at Home */}
+                <div className="flex items-center">
+                  <input
+                    id="availableAtHome"
+                    name="availableAtHome"
+                    type="checkbox"
+                    checked={formData.availableAtHome}
+                    onChange={handleChange}
+                    className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                  <label htmlFor="availableAtHome" className="ml-3 text-sm sm:text-base text-gray-700">
+                    Available at customer's home
+                  </label>
                 </div>
 
-                <div className="space-y-2">
-                  <label htmlFor="image" className="block text-sm font-medium text-gray-700">
+                {/* Image Upload */}
+                <div>
+                  <label className="block text-sm sm:text-base font-medium text-gray-700 mb-2">
                     Service Image
                   </label>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="border-2 border-dashed rounded-lg p-4 flex flex-col items-center justify-center text-center">
-                      <div className="mb-4 p-4 rounded-full bg-gray-100">
-                        <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                        </svg>
-                      </div>
-                      <p className="mb-2 text-sm font-medium">Drag and drop or click to upload</p>
-                      <p className="text-xs text-gray-500 mb-4">SVG, PNG, JPG or GIF (max. 2MB)</p>
+                    <div className="border-2 border-dashed border-gray-300 rounded-xl p-4 flex flex-col items-center justify-center">
                       <input
                         id="image"
-                        name="serviceImage"
                         type="file"
-                        className="hidden"
                         accept="image/*"
                         onChange={handleImageChange}
+                        className="hidden"
                       />
                       <button
                         type="button"
-                        onClick={() => document.getElementById("image").click()}
-                        className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        onClick={() => document.getElementById('image').click()}
+                        className="w-full py-8 flex flex-col items-center justify-center text-gray-500 hover:text-gray-700"
                       >
-                        Upload Image
+                        <svg
+                          className="w-8 h-8 mb-2"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+                          />
+                        </svg>
+                        <span className="text-sm font-medium">Upload Image</span>
+                        <span className="text-xs text-gray-400 mt-1">
+                          PNG, JPG up to 2MB
+                        </span>
                       </button>
                     </div>
 
-                    <div className="aspect-video relative rounded-lg overflow-hidden bg-gray-100">
+                    {/* Image Preview */}
+                    <div className="aspect-video bg-gray-50 rounded-xl overflow-hidden">
                       {imagePreview ? (
                         <img
                           src={imagePreview}
@@ -395,17 +382,18 @@ function ServiceManagement() {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <div className="flex items-center justify-center h-full text-gray-500">Image preview</div>
+                        <div className="w-full h-full flex items-center justify-center text-gray-400">
+                          Image Preview
+                        </div>
                       )}
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="mt-6">
+                {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-full bg-black text-white py-2 px-4 rounded-md hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full py-3 px-4 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors text-sm sm:text-base font-medium"
                 >
                   Add Service
                 </button>
