@@ -105,14 +105,18 @@ const Booking = () => {
       return;
     }
   
+    console.log("services:- ",services)
+    // console.log("serviceBookings", serviceBookings)
     const bookingData = {
       userInfo: {
         name: formData.name,
         phone: formData.phone,
-        address: formData.address
+        address: formData.address,
+        userId: user._id
       },
       services: bookedServices.map(service => {
         const bookingDetails = serviceBookings[service.serviceName];
+        // console.log('each seervices',service)
         const serviceObj = {
           serviceId: service.serviceId,
           serviceName: service.serviceName,

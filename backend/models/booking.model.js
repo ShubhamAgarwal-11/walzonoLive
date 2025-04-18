@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+// Service-level schema
 const serviceSchema = new mongoose.Schema({
     serviceId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -12,7 +13,7 @@ const serviceSchema = new mongoose.Schema({
     serviceImage: { type: String },
     serviceType: { type: String, required: true },
 
-    // Individual Booking Details for Each Service
+    // Booking Info at the Service Level
     bookingType: {
         type: String,
         enum: ["Today's Booking", 'Home Appointment', 'Salon Appointment'],
@@ -29,28 +30,9 @@ const serviceSchema = new mongoose.Schema({
         required: function () {
             return this.bookingType !== "Today's Booking";
         }
-    }
-}, { _id: false });
-
-const bookingSchema = new mongoose.Schema({
-    userInfo: {
-        name: { type: String, required: true },
-        phone: { type: String, required: true },
-        address: { type: String, required: true }
     },
 
-    services: {
-        type: [serviceSchema],
-        required: true,
-        validate: v => Array.isArray(v) && v.length > 0
-    },
-
-    bookingMode: {
-        type: String,
-        enum: ['COD', 'Online'],
-        required: true
-    },
-
+    // Partner Info at the Service Level
     partnerInfo: {
         partnerId: {
             type: mongoose.Schema.Types.ObjectId,
@@ -59,6 +41,33 @@ const bookingSchema = new mongoose.Schema({
         },
         name: { type: String, required: true },
         image: { type: String }
+    }
+}, { _id: false });
+
+// Main Booking Schema
+const bookingSchema = new mongoose.Schema({
+    userInfo: {
+        name: { type: String, required: true },
+        phone: { type: String, required: true },
+        address: { type: String, required: true },
+        userId : {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
+        }
+    },
+
+    services: {
+        type: [serviceSchema],
+        required: true,
+        validate: v => Array.isArray(v) && v.length > 0
+    },
+
+    paymentMethod: {
+        type: String,
+        enum: ['COD', 'Online'],
+        default : 'COD',
+        required: true
     },
 
     bookingStatus: {

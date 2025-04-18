@@ -187,7 +187,7 @@ export default function ServicesByTypes() {
           parlourImage : service.partnerId.parlourImage
         })
       )
-      // console.log("service added to cart" , service.duration)
+      console.log("service added to cart" , service)
     }
 
     const handleRemoveFromCart = () => {

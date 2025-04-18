@@ -190,7 +190,7 @@ export default function ServicesByTypes() {
         })
         
       )
-      // console.log("service added to cart" , service)
+      // console.log("service added to cart" , service.partnerId._id)
       // console.log("service added to cart" )
     }
 

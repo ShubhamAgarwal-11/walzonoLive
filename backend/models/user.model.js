@@ -12,11 +12,11 @@ const userSchema = new mongoose.Schema({
       zipCode: String,
       coordinates: { type: [Number], index: '2dsphere' } // [longitude, latitude]
     },    
-    userLiveLocation : { type: [Number], index: '2dsphere' },
-    bookingId : { 
+    orderId : [{
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Booking'
-    },
+    }],
+    userLiveLocation : { type: [Number], index: '2dsphere' },
     createdAt: { type: Date, default: Date.now }
   });
 

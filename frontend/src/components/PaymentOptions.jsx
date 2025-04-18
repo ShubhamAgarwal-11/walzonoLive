@@ -1,10 +1,14 @@
 "use client"
 
 import { useState } from "react"
-import { CreditCard, Wallet, Clock, Calendar, Home, Store, MapPin } from "lucide-react" 
+import { CreditCard, Wallet, Clock, Calendar, Home, Store, MapPin, CheckCircle } from "lucide-react"
 import { useSelector } from "react-redux"
 import { getBookingInfo } from "../redux/bookingSlice"
 import { getDiscount, getPrice } from "../redux/cartSlice"
+import axios from "axios"
+import { toast } from "react-hot-toast"
+import { BOOKING_API_END_POINT } from "../utils/constent"
+import { useNavigate } from "react-router"
 
 const styles = `
 .scrollbar-thin::-webkit-scrollbar {
@@ -24,17 +28,47 @@ const styles = `
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
   background: #9ca3af;
 }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
 `
 
 export default function PaymentOption() {
-  const [paymentMethod, setPaymentMethod] = useState("cod")
+  const [paymentMethod, setPaymentMethod] = useState("COD")
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
   const bookingInfo = useSelector(getBookingInfo)
   const totalPrice = useSelector(getPrice)
   const discount = useSelector(getDiscount)
+  const navigate = useNavigate()
 
-  const handleBooking = () => {
-    const newBookingInfo = {...bookingInfo, paymentMethod}
-    console.log("new booking info:- ", newBookingInfo)
+  const handleBooking = async () => {
+    const newBookingInfo = { ...bookingInfo, paymentMethod }
+    try {
+      const response = await axios.post(`${BOOKING_API_END_POINT}/createBooking`, newBookingInfo, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      })
+      if (response.data.success) {
+        toast.success(response.data.message)
+        setShowSuccessModal(true)
+        setTimeout(() => {
+          setShowSuccessModal(false)
+          navigate("/")
+        }, 3000)
+        console.log(response.data)
+      }
+    } catch (error) {
+      toast.error(error.response.data.message)
+      console.log(error)
+    }
   }
 
   return (
@@ -57,15 +91,13 @@ export default function PaymentOption() {
                   <div key={index} className="border-b last:border-b-0 p-4">
                     {/* Partner Info */}
                     <div className="flex items-center gap-3 mb-3 p-3 bg-gray-50 rounded-lg">
-                      <img 
-                        src={service.partnerInfo.image}
+                      <img
+                        src={service.partnerInfo.image || "/placeholder.svg"}
                         alt={service.partnerInfo.name}
                         className="w-12 h-12 rounded-full object-cover"
                       />
                       <div className="min-w-0">
-                        <h3 className="font-medium text-sm truncate">
-                          {service.partnerInfo.name}
-                        </h3>
+                        <h3 className="font-medium text-sm truncate">{service.partnerInfo.name}</h3>
                         <p className="text-xs text-gray-600">Professional {service.serviceType}</p>
                       </div>
                     </div>
@@ -96,15 +128,17 @@ export default function PaymentOption() {
 
                     {/* Service Details */}
                     <div className="flex gap-3 bg-gray-50 p-3 rounded-lg">
-                      <img 
-                        src={service.serviceImage}
+                      <img
+                        src={service.serviceImage || "/placeholder.svg"}
                         alt={service.serviceName}
                         className="w-14 h-14 rounded-md object-cover"
                       />
                       <div className="flex-1 min-w-0">
                         <div className="flex justify-between items-start gap-2">
                           <h4 className="font-medium text-sm truncate">{service.serviceName}</h4>
-                          <span className="text-sm font-medium whitespace-nowrap">₹{service.price} x {service.quantity}</span>
+                          <span className="text-sm font-medium whitespace-nowrap">
+                            ₹{service.price} x {service.quantity}
+                          </span>
                         </div>
                         <p className="text-xs text-gray-600 capitalize">{service.serviceType}</p>
                         <div className="mt-1.5 flex items-center gap-2">
@@ -165,11 +199,11 @@ export default function PaymentOption() {
                   <div className="flex items-start space-x-4 rounded-md border p-4">
                     <input
                       type="radio"
-                      id="cod"
+                      id="COD"
                       name="paymentMethod"
-                      value="cod"
-                      checked={paymentMethod === "cod"}
-                      onChange={() => setPaymentMethod("cod")}
+                      value="COD"
+                      checked={paymentMethod === "COD"}
+                      onChange={() => setPaymentMethod("COD")}
                       className="mt-1"
                     />
                     <div className="flex flex-1 flex-col">
@@ -183,26 +217,31 @@ export default function PaymentOption() {
                   <div className="flex items-start space-x-4 rounded-md border cursor-not-allowed p-4">
                     <input
                       type="radio"
-                      id="online"
+                      id="Online"
                       name="paymentMethod"
-                      value="online"
-                      checked={paymentMethod === "online"}
-                      onChange={() => setPaymentMethod("online")}
+                      value="Online"
+                      checked={paymentMethod === "Online"}
+                      onChange={() => setPaymentMethod("Online")}
                       className="mt-1 cursor-not-allowed"
                       disabled
                     />
                     <div className="flex flex-1 flex-col">
-                      <label htmlFor="online" className="flex text-gray-600 items-center gap-2 font-medium cursor-not-allowed">
+                      <label
+                        htmlFor="online"
+                        className="flex text-gray-600 items-center gap-2 font-medium cursor-not-allowed"
+                      >
                         <CreditCard className="h-5 w-5" />
                         Online Payment
                       </label>
-                      <p className="text-sm text-gray-500 mt-1">Pay now using credit/debit card or other online methods</p>
+                      <p className="text-sm text-gray-500 mt-1">
+                        Pay now using credit/debit card or other online methods
+                      </p>
                     </div>
                   </div>
                 </div>
-                <button 
-                  onClick={handleBooking} 
-                  disabled={paymentMethod === "online"} 
+                <button
+                  onClick={handleBooking}
+                  disabled={paymentMethod === "online"}
                   className="w-full mt-6 bg-blue-600 text-white py-2.5 rounded-lg hover:bg-blue-700 font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {paymentMethod === "cod" ? "Confirm Booking" : "Proceed to Pay"}
@@ -212,6 +251,17 @@ export default function PaymentOption() {
           </div>
         </div>
       </div>
+      {showSuccessModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-sm w-full text-center shadow-xl animate-fade-in">
+            <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+            <h2 className="text-xl font-bold mb-2">Order Placed Successfully!</h2>
+            <p className="text-gray-600 mb-4">
+              Thank you for your booking. You will be redirected to the home page shortly.
+            </p>
+          </div>
+        </div>
+      )}
     </>
   )
 }
