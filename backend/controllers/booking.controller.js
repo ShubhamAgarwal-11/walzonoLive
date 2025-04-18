@@ -96,3 +96,22 @@ exports.createBooking = async (req, res) => {
     }
 };
 
+
+
+exports.getAllBookings = async (req, res) => {
+    try {
+        const bookings = await Booking.find().sort({ createdAt: -1 }); // Sort by newest first
+        res.status(200).json({
+            success: true,
+            message: 'All Bookings',
+            bookings: bookings
+        });
+    } catch (error) {
+        console.error('Error fetching bookings:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error',
+            error: error.message
+        });
+    }
+};

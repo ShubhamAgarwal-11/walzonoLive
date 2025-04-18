@@ -24,7 +24,7 @@ import PaymentOption from './components/PaymentOptions'
 import BlogList from './components/blog/BlogList'
 import Contact from './components/Contact'
 import AllServicesOfSalons from './components/AllServicesOfSalons'
-
+import { OrderLayout } from './components/orders/OrderLayout'
 function App() {
   const appRouter = createBrowserRouter([
     {
@@ -50,6 +50,10 @@ function App() {
         {
           path : "/salon/:id",
           element : <AllServicesOfSalons/>
+        },
+        {
+          path : "/orders",
+          element : <OrderLayout/>
         },
         {
           path : "/contact",
