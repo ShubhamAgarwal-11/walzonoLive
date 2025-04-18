@@ -61,7 +61,7 @@ export default function PaymentOption() {
         setShowSuccessModal(true)
         setTimeout(() => {
           setShowSuccessModal(false)
-          navigate("/")
+          navigate("/orders")
         }, 3000)
         console.log(response.data)
       }
