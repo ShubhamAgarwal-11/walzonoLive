@@ -59,12 +59,17 @@ export default function PaymentOption() {
       })
       if (response.data.success) {
         toast.success(response.data.message)
-        const res = await axios.post(`${BOOKING_API_END_POINT}/sendEmailToPartnerForConfirmBooking`, newBookingInfo, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        })
+        try {
+          const res = await axios.post(`${BOOKING_API_END_POINT}/sendEmailToPartnerForConfirmBooking`, newBookingInfo, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          })
+          console.log("email sending response",res)
+        } catch (error) {
+          console.log(error)
+        }
         setShowSuccessModal(true)
         setTimeout(() => {
           setShowSuccessModal(false)

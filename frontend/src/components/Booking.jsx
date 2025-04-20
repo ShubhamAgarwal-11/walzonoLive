@@ -129,7 +129,8 @@ const Booking = () => {
           partnerInfo: {
             partnerId: service.partnerId,
             name: service.parlourName,
-            image: service.parlourImage
+            image: service.parlourImage,
+            email: service.partnerEmail
           }
         };
         if (bookingDetails.bookingType === "Home Appointment" || bookingDetails.bookingType === "Salon Appointment") {

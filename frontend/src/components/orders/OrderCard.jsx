@@ -71,7 +71,7 @@ export function OrderCard({ order, isExpanded, onToggleDetails }) {
                         <span className="font-medium">Booking Type:</span> {service.bookingType}
                       </p>
                       <p className="text-sm">
-                        <span className="font-medium">Date:</span> {service.bookingDate.slice(0, 10)}
+                        <span className="font-medium">Date:</span> {service.bookingDate?.slice(0, 10)}
                       </p>
                       <p className="text-sm">
                         <span className="font-medium">Time:</span> {service.bookingTime}

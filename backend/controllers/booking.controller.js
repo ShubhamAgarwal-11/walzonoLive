@@ -116,6 +116,37 @@ exports.getAllBookings = async (req, res) => {
     }
 };
 
+exports.getAllBookingsByUserId = async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        if (!userId) {
+            return res.status(400).json({
+                success: false,
+                message: 'Missing userId in parameters'
+            });
+        }
+
+        const bookings = await Booking.find({ "userInfo.userId": userId })
+            .sort({ createdAt: -1 })
+            .lean();
+
+        res.status(200).json({
+            success: true,
+            message: 'All Bookings',
+            bookings
+        });
+    } catch (error) {
+        console.error('Error fetching bookings:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error',
+            error: error.message
+        });
+    }
+};
+
+
 exports.sendEmailToPartnerForConfirmBooking = async (req, res) => {
     try {
         // Logic to send email to partner

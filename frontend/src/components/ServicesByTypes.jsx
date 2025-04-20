@@ -188,7 +188,7 @@ export default function ServicesByTypes() {
           partnerEmail : service.partnerId.email
         })
       )
-      console.log("service added to cart" , service)
+      // console.log("service added to cart" , service.partnerId.email)
     }
 
     const handleRemoveFromCart = () => {
