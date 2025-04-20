@@ -2,14 +2,14 @@ import React from 'react';
 
 const PaymentHistory = () => {
   const payments = [
-    {
-      id: '1',
-      orderId: '1',
-      amount: 1200,
-      status: 'success',
-      date: '2024-03-15',
-      method: 'Credit Card',
-    },
+    // {
+    //   id: '1',
+    //   orderId: '1',
+    //   amount: 1200,
+    //   status: 'success',
+    //   date: '2024-03-15',
+    //   method: 'Credit Card',
+    // },
     // Add more sample payments
   ];
 

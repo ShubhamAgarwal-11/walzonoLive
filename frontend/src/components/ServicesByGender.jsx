@@ -186,7 +186,8 @@ export default function ServicesByTypes() {
           duration: service.duration,
           serviceType : service.serviceType,
           partnerId : service.partnerId._id,
-          parlourImage : service.partnerId.parlourImage
+          parlourImage : service.partnerId.parlourImage,
+          partnerEmail : service.partnerId.email
         })
         
       )
