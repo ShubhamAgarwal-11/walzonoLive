@@ -146,41 +146,72 @@ exports.getAllBookingsByUserId = async (req, res) => {
     }
 };
 
-
 exports.sendEmailToPartnerForConfirmBooking = async (req, res) => {
     try {
-        // Logic to send email to partner
-        const {newBookingInfo} = req.body;
-        if(!newBookingInfo){
-            return res.status(400).json({success : false, message: 'Missing required fields in service.' });
-        }
-        const partnerName = newBookingInfo.services[0].partnerInfo.name;
-        const customerName = newBookingInfo.userInfo.name;
-        const orderId = newBookingInfo._id;
-        const orderDate = newBookingInfo.services[0]?.bookingDate;
-        const orderTotal = newBookingInfo.services[0].price;
-        const partnerEmail = newBookingInfo.services[0].partnerInfo?.email;
-        const emailContent = generateOrderNotificationEmail({ partnerName, customerName, orderId, orderDate, orderTotal });
-
-        try {
-            await sendEmail(partnerEmail, "New Booking Notification", emailContent);
-        } catch (error) {
-            return res.status(500).json({ 
-                success: false,
-                error: "Failed to send email"
-            });
-        }
-
-        res.status(200).json({
-            success: true,
-            message: 'Email sent to partner successfully',
+      const { newBookingInfo } = req.body;
+    //   console.log("api hit");
+  
+      if (
+        !newBookingInfo ||
+        !newBookingInfo.services ||
+        !Array.isArray(newBookingInfo.services) ||
+        newBookingInfo.services.length === 0 ||
+        !newBookingInfo.userInfo
+      ) {
+        return res.status(400).json({
+          success: false,
+          message: 'Missing required fields in booking information.',
         });
+      }
+  
+      const service = newBookingInfo.services[0];
+      const partnerInfo = service.partnerInfo;
+  
+      if (!partnerInfo || !partnerInfo.email) {
+        return res.status(400).json({
+          success: false,
+          message: 'Partner information is incomplete.',
+        });
+      }
+  
+      const partnerName = partnerInfo.name;
+      const partnerEmail = partnerInfo.email;
+      const customerName = newBookingInfo.userInfo.name;
+      const orderId = newBookingInfo._id;
+      const orderDate = service.bookingDate;
+      const orderTotal = service.price;
+  
+      const emailContent = generateOrderNotificationEmail({
+        partnerName,
+        customerName,
+        orderId,
+        orderDate,
+        orderTotal
+      });
+  
+    //   console.log('Email content:', emailContent);
+      try {
+        await sendEmail(partnerEmail, "New Booking Notification", emailContent);
+      } catch (error) {
+        console.error("Email sending error:", error);
+        return res.status(500).json({
+          success: false,
+          error: "Failed to send email"
+        });
+      }
+  
+      res.status(200).json({
+        success: true,
+        message: 'Email sent to partner successfully',
+      });
+  
     } catch (error) {
-        console.error('Error sending email to partner:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Internal server error',
-            error: error.message
-        });
+      console.error('Error sending email to partner:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+        error: error.message
+      });
     }
-}
+  };
+  

@@ -7,7 +7,7 @@ const bookingController = require('../controllers/booking.controller');
 router.post('/createBooking',bookingController.createBooking);
 router.get('/getAllBookings',bookingController.getAllBookings);
 router.get('/getAllBookingsByUserId/:userId',bookingController.getAllBookingsByUserId);
-router.post('sendEmailToPartnerForConfirmBooking',bookingController.sendEmailToPartnerForConfirmBooking)
+router.post('/sendEmailToPartnerForConfirmBooking',bookingController.sendEmailToPartnerForConfirmBooking)
 
 
 module.exports = router;
