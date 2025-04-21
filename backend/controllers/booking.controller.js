@@ -154,7 +154,6 @@ exports.sendEmailToPartnerForConfirmBooking = async (req, res) => {
       if (
         !newBookingInfo ||
         !newBookingInfo.services ||
-        !Array.isArray(newBookingInfo.services) ||
         newBookingInfo.services.length === 0 ||
         !newBookingInfo.userInfo
       ) {
